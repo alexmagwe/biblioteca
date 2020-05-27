@@ -1,3 +1,3 @@
 # biblioteca
 university Notes access
-notes service for university students
+for university students
