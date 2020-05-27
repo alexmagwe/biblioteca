@@ -1,0 +1,5 @@
+discard
+__pycache__
+.vscode
+.git
+.flaskenv

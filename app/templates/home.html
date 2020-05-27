@@ -1,0 +1,46 @@
+{%extends 'layout.html'%} {%block content%}
+
+<div>
+    <div id='search'><input type='text\' name='search' pattern='[A-Za-z\s]{3,}'><span id='search-icon'><i class="fas fa-search"></i></span></div>
+    <div>
+        <embed src="" type="application/pdf" height="300px" width="100%">
+        <a href="{{url_for('static',filename='pdfs/Flask_Web_Development_Developing.pdf')}}">download</a></div>
+    <div id='dashboard'>
+        <h2 id='course-name'>
+            Microprocessor Technology
+        </h2>
+        <div id='year'>
+            <h3 class='year' id='year1'>Year 1</h3>
+            <div class='semester'>Semester 1</div>
+            <div class='units'>units</div>
+            <div class='semester'>Semester 2</div>
+            <div class='units'>units</div>
+        </div>
+
+        <div id='year'>
+            <h3 class='year' id='year2'>Year 2</h3>
+            <div class='semester'>Semester 1</div>
+            <div class='units'>units</div>
+            <div class='semester'>Semester 2</div>
+            <div class='units'>units</div>
+        </div>
+        <div id='year'>
+            <h3 class='year' id='year3'>Year 3</h3>
+            <div class='semester'>Semester 1</div>
+            <div class='units'>units</div>
+            <div class='semester'>Semester 2</div>
+            <div class='units'>units</div>
+        </div>
+        <div id='year'>
+            <h3 class='year' id='year4'>Year 4</h3>
+            <div class='semester'>Semester 1</div>
+            <div class='units'>units</div>
+            <div class='semester'>Semester 2</div>
+            <div class='units'>units</div>
+        </div>
+
+    </div>
+    <div id='notes-container '></div>
+    <div id=' '></div>
+</div>
+{%endblock%}

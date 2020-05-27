@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+
+</head>
+
+<body>
+    <div>
+        <header>
+            <nav id='nav'>
+                <div class='nav-items-left'><a href='/'>Home</a>
+                </div>
+                {%if current_user.is_anonymous%}
+                <div class='nav-items'><a id='login'>Login</a>{%else%}
+                    <div class='nav-items'><a href='/logout'>Logout</a> {%endif%} {%if current_user.is_authenticated%}
+                    </div>
+                    <div id="icon"><img id='img' src='{{current_user.picture}}' alt='Google profile'></div> {%endif%} </nav>
+            {%block content%}
+            <div class="modal"></div>
+            {%endblock%}
+
+
+
+
+
+
+
+        </header>
+
+</body>
+<script>
+    $('#login').onclick
+</script>
+
+</html>
