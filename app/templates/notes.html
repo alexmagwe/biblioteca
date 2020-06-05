@@ -1,0 +1,69 @@
+{%extends 'layout.html'%} {% block content %}
+
+<form id='coursenotes'>
+    <label for='name'><h3>Enter course name</h3></label>
+    <input id='name' type='text' name='course_name'>
+    <button type="submit">search</button>
+</form>
+<ul>
+</ul>
+<script>
+    window.addEventListener('load', () => {
+        let list = document.querySelector('ul')
+        let form = document.querySelector('#coursenotes');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const name = form.elements['course_name'].value;
+            console.log(name)
+
+            /*let payload = JSON.stringify({
+                    'course_name': name
+                })
+                let data = {
+                    
+                    headers: {
+                        "Content-Type": 'application/json;charset=utf=8'
+                    },
+                    body: JSON.stringify(payload)
+                }*/
+
+            fetch('/course_notes?name=' + name)
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data['error']) {
+                        console.log(data['error'])
+                    } else {
+                        console.log(data)
+                        let notes = data[name];
+                        console.log(data[name])
+                        notes.forEach(el => {
+                            console.log(el)
+                            let item = document.createElement('li')
+
+                            let link = document.createElement('a')
+                            let view = document.createElement('a')
+
+                            link.href = el.url
+                            link.innerHTML = 'Download'
+                            view.href = el.url
+                            link.download = el.name
+                            view.innerHTML = 'View'
+                            view.target = '_blank'
+                            view.type = 'application/pdf'
+                            view.classList += 'view'
+
+                            link.classList += 'download'
+                            item.innerHTML = el.name
+                            item.appendChild(link)
+                            item.appendChild(view)
+                            list.appendChild(item)
+
+
+                        })
+                    }
+
+                })
+        })
+    })
+</script>
+{% endblock%}

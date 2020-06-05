@@ -1,0 +1,34 @@
+{% extends 'layout.html' %} {% block content %}
+<form>
+    <input type='text' name='course' required>
+    <button type="submit"> add</button>
+</form>
+<script>
+    window.addEventListener('load', () => {
+        let form = document.querySelector('form')
+
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            c = form.elements['course'].value
+            console.log(c)
+            payload = {
+                'course_name': c
+            }
+            data = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf=8'
+                },
+
+                body: JSON.stringify(payload)
+            }
+            fetch('/add_course', data).then(resp => resp.json()).then(data =>
+                console.log(data));
+
+
+        })
+
+    })
+</script>
+{% endblock%}

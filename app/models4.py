@@ -5,9 +5,6 @@ from flask import current_app,redirect,url_for
 from passlib.hash import sha256_crypt
 import os
 
-static_folder=os.path.abspath(__file__).split('/')[:-1]
-static_folder="/".join(static_folder[:-1])+'/app/static'
-
 class Permissions:
     ADMIN=16
     ADDNOTES=8
@@ -73,9 +70,9 @@ class Courses(db.Model):
     def __init__(self,**kwargs):   
         super(Courses, self).__init__(**kwargs)
         print(self.name)
-        course=Courses.query.filter_by(name=self.name).first()
-        if not course:
-            self.path=self.make_path()
+        # course=Courses.query.filter_by(name=self.name).first()
+        # if not course:
+            # self.path=self.make_path()
     def addsubfolders(self,path):
         degree_period=4
         semesters=2
@@ -92,20 +89,19 @@ class Courses(db.Model):
                 except FileNotFoundError:
                     print('could not make directory')
                     return
-                
         
-    def make_path(self):
-        path=os.path.join(static_folder,'notes','courses',self.name)
+    def make_path(self,static_folder):
+        path=os.path.join(static_folder,'courses',self.name)
         if not os.path.isdir(path):
             try:
                 os.mkdir(path)
-                addsubfolders(path)
-                
+                self.addsubfolders(path)
             except:
                 path=os.path.join(static_folder,'tobemoved')
                 os.mkdir(path)
                 return path
         if os.path.isdir(path):
+            self.path=path
             return path
 
     def get_path(self):
@@ -154,6 +150,7 @@ class Notes(db.Model):
        return f'notes:{self.name},unit-name:[{self.unit.name}]'
     def get_path(self):
         return self.path
+    
     def make_path(self):
         self.path=self.unit.get_path()
         
