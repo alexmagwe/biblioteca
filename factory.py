@@ -1,8 +1,8 @@
-from notes.app import create_app,db
+from notes01.app import create_app,db
 from flask_migrate import Migrate,MigrateCommand
 from flask_script import Shell,Manager
-# from notes.app.models3 import Users,Courses,Permissions,Roles,Units,Notes,Teachers
-from notes.app.models4 import Users,Courses,Permissions,Units,Notes,Teachers
+# from notes01.app.models3 import Users,Courses,Permissions,Roles,Units,Notes,Teachers
+from notes01.app.models4 import Users,Courses,Permissions,Units,Notes,Teachers
 
 app=create_app()
 manager=Manager(app)

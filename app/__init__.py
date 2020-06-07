@@ -7,7 +7,7 @@ from flask_mail import Mail
 from flask_admin import Admin
 # from flask_mongoengine import MongoEngine
 from flask_sqlalchemy import SQLAlchemy
-from notes.config import configs
+from notes01.config import configs
 from flask_bootstrap import Bootstrap
 from flask_pymongo import PyMongo
 meta = MetaData(naming_convention={
@@ -39,9 +39,9 @@ def create_app():
     migrate.init_app(app,db,render_as_batch=True)
     db.init_app(app)
     bootstrap.init_app(app)
-    from notes.app.api import api
+    from notes01.app.api import api
     app.register_blueprint(api) 
-    from notes.app.auth import auth
+    from notes01.app.auth import auth
     app.register_blueprint(auth,url_prefix='/auth')
     return app
             

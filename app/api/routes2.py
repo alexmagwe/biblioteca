@@ -1,6 +1,6 @@
 from flask import Flask,jsonify,request,url_for,render_template,session
 import requests
-from notes.app import login_manager,db
+from notes01.app import login_manager,db
 from . import api
 import requests
 import os,json
