@@ -6,3 +6,6 @@ notes
 .flaskenv
 .
 ..
+client_secrets.json
+mycreds.txt
+token.pickle

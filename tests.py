@@ -2,7 +2,7 @@ import unittest
 from app.models import Users,Permissions,AnonymousUser
 class TestPermissions(unittest.TestCase):
     def test_role(self):
-        user=Users(email='alexmage@gmail.com',username='alex',password='random')
+        user=Users(email='alexmagwe@gmail.com',username='alex',password='random')
         self.assertFalse(user.can(Permissions.ADDNOTES))
         self.assertFalse(user.can(Permissions.ADMIN))
         self.assertTrue(user.can(Permissions.MYNOTES))

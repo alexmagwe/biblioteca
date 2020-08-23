@@ -24,14 +24,14 @@ class Users(db.Model,UserMixin):
         super(Users,self).__init__(*args,**kwargs)
         if self.permissions is None:
             teacher=Teachers.query.filter_by(email=self.email).first()
-            admins=current_app.config['ADMINS']
+            admin=AdminsList.query.filter_by(email=self.email).first()
             if teacher:
                 self.permissions=Permissions.ADDNOTES+Permissions.MYNOTES
-            if self.email in admins:
+            if admin:
                 self.permissions=Permissions.ADMIN+Permissions.ADDNOTES+Permissions.MYNOTES
             
     def can(self,perm):
-        return self.permissions is not None and self.role.has_permission(perm)
+        return self.permissions is not None and self.has_permission(perm)
     def has_permission(self,p):
         return self.permissions&p==p#BITWISE AND COMPARISON  OF  INPUT AND SELF.PERM
     @property
@@ -52,6 +52,20 @@ class AnonymousUser(AnonymousUserMixin):
     def is_admin(self):
         return False
 login_manager.anonymous_user=AnonymousUser
+class AdminsList(db.Model):
+    id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
+    email=db.Column(db.String(100),unique=True,nullable=False)
+    def __repr__(self):
+        return f"{self.email}"
+    def add(self):
+        db.session.add(self)
+        try:
+            db.session.commit()
+            return {'success':'admin addded succesfully'}
+        except Exception as e:
+            return {'error':e}
+        
+
 class Teachers(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     email=db.Column(db.String(30),index=True,nullable=False)
@@ -172,7 +186,7 @@ class AdminView(ModelView):
 # admin.add_view(AdminView(Users,db.session))
 # admin.add_view(AdminView(Courses,db.session))
 # admin.add_view(AdminView(Units,db.session))
-# admin.add_view(AdminView(Notes,db.session))
+admin.add_view(AdminView(AdminsList,db.session))
 admin.add_view(AdminView(Teachers,db.session))
 
 admin.add_view(ModelView(Courses,db.session))

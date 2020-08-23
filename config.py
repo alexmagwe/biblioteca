@@ -14,6 +14,8 @@ class Development(Config):
     MAIL_PORT=2525
     ADMINS=os.environ.get('ADMINS')
     MAIL_USE_TLS=True
+    DEBUG=True
+    # GOOGLE_APPLICATION_CREDENTIALS=os.path.abspath('Notes-c108a1523ab3.json')
     MAIL_USE_SSL=False
     MAIL_USERNAME= '18046de32e56fe'
     MAIL_PASSWORD= 'a0ad48ed8fb0a0'
@@ -21,8 +23,7 @@ class Development(Config):
 class Production(Config):
     #to be updated
     SECRET_KEY=os.environ.get('SECRET_KEY')
-    MONGODB_HOST=os.environ.get('MONGODB_URI')
-    MONGODB_NAME='notes'
+  
 configs={
     'development':Development,
     'production':Production

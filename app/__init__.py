@@ -4,12 +4,12 @@ from flask_login import LoginManager
 from sqlalchemy import MetaData
 from flask_migrate import Migrate,MigrateCommand
 from flask_mail import Mail 
+import os
 from flask_admin import Admin
 # from flask_mongoengine import MongoEngine
 from flask_sqlalchemy import SQLAlchemy
 from notes01.config import configs
 from flask_bootstrap import Bootstrap
-from flask_pymongo import PyMongo
 meta = MetaData(naming_convention={
         "ix": "ix_%(column_0_label)s",
         "uq": "uq_%(table_name)s_%(column_0_name)s",
@@ -20,8 +20,6 @@ meta = MetaData(naming_convention={
 
 db=SQLAlchemy()
 mail=Mail()
-# mongo=PyMongo()
-
 bootstrap=Bootstrap()
 admin=Admin(name='Admin')
 login_manager=LoginManager()
@@ -35,7 +33,6 @@ def create_app():
     mail.init_app(app)
     login_manager.init_app(app)
     admin.init_app(app)
-    # mongo.init_app(app)
     migrate.init_app(app,db,render_as_batch=True)
     db.init_app(app)
     bootstrap.init_app(app)
@@ -45,3 +42,6 @@ def create_app():
     app.register_blueprint(auth,url_prefix='/auth')
     return app
             
+def getuploadpath():
+  path=os.path.join(os.path.dirname(__file__),'static/toupload')
+  return path
