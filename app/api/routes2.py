@@ -164,18 +164,15 @@ class Upload(Resource):
                     return res,500
                 if (path:=res.get('path')):
                     obj=FileUploader(path,file.filename,unit)
-                    uploaded.append(obj.driveupload(drive))
+                    obj.driveupload(drive)
                     obj.delete_file()
+                    res=obj.getResource(drive)
+                    if res:
+                        print('got data')
+                        uploaded.append(obj.data)
                     
         return uploaded
-# class AddNotes(Resource):
-#     def post(self):
-#         data=request.json
-#         print(data)
-#         if data.get("unit") and data.get("urls"):
-#             unit,urls=data.unit,data.urls
-#             print(unit,urls)
-#         return urls
+
     
 
 class AddMyCourse(Resource):
@@ -272,4 +269,4 @@ myapi.add_resource(GetUnits,'/units')
 myapi.add_resource(Upload,'/add_notes')
 myapi.add_resource(AddMyCourse,'/add_mycourse')
 myapi.add_resource(AllNotes,'/all_notes')
-# myapi.add_resource(AddNotes,'/add_notes')
+
