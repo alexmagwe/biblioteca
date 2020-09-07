@@ -10,36 +10,16 @@ import requests
 from notes01.app import getuploadpath
 import os.path
 
-SCOPES = ['https://www.googleapis.com/auth/drive']
+SCOPES = ['https://www.googleapis.com/auth/drive.file']
 SERVICE_ACCOUNT_FILE = 'secrets.json'
 
 class FileUploader:
     @staticmethod
-    def getDrive():
-        credentials = service_account.Credentials.from_service_account_file(
+    def getcreds():
+        creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-        """Shows basic usage of the Drive v3 API."""
-        # creds = None
-        # # The file token.pickle stores the user's access and refresh tokens, and is
-        # # created automatically when the authorization flow completes for the first
-        # # time.
-        # if os.path.exists('token.pickle'):
-        #     with open('token.pickle', 'rb') as token:
-        #         creds = pickle.load(token)
-        # # If there are no (valid) credentials available, let the user log in.
-        # if not creds or not creds.valid:
-        #     if creds and creds.expired and creds.refresh_token:
-        #         creds.refresh(Request())
-        #     else:
-        #         flow = InstalledAppFlow.from_client_secrets_file(
-        #             'client_secrets.json', SCOPES)
-        #         creds = flow.run_local_server(port=8080)
-        #     # Save the credentials for the next run
-        #     with open('token.pickle', 'wb') as token:
-        #         pickle.dump(creds, token)
-
-        service = build('drive', 'v3', credentials=credentials)
-        return service
+        return creds
+        
 
     def __init__(self,file,name,unit,urls={},*args,**kwargs):
      
@@ -48,8 +28,10 @@ class FileUploader:
         self.name=name
         self.urls=urls
         self.uploadpath=os.path.join(getuploadpath(),self.name)
+        
     
-    def driveupload(self,drive):
+    def driveupload(self,creds):
+        drive = build('drive', 'v3', credentials=creds)
         folder_id='1E8IWN4ROK2bICbOvwsc8GZw2bgj96wBy'
         file_metadata = {
             'name': self.name,
@@ -65,17 +47,10 @@ class FileUploader:
         id=drive.files().create(body=file_metadata,
                                             media_body=media,
                                             fields='id').execute()
-        self.id=id
-        return 
-    def getResource(self,drive):
-        resp=drive.files().get(fileId=self.id,fields='files(id,webContentLink,name)').execute()
-        print(resp.to_json())
-        if resp.status_code=='200':
-            self.data=resp.json()
-            print(self.data)
-            return True
-        else:
-            return False
+        
+        self.id=id 
+        return id 
+
         
     def delete_file(self):
         file_path=self.uploadpath
@@ -95,4 +70,3 @@ class FileUploader:
         bucket=storage_client.bucket(bucket_name)
         blob=bucket.blob(name)
         blob.upload_from_file(self.file)
-        print(f'{name} uploaded to {name}')

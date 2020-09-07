@@ -25,7 +25,6 @@ def home():
     if current_user.is_authenticated:
         return render_template('home.html')
     else:
-        print('user not logged in')
         return render_template('landing.html')
 @auth.route('/')
 def student():

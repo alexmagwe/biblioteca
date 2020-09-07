@@ -38,15 +38,13 @@ class Users(db.Model,UserMixin):
     def is_admin(self):
         return self.can(Permissions.ADMIN)
     
+
     def __repr__(self):
         return f'email:{self.email},permissions:{self.permissions}'
-    
     def set_password(self,password):
         self.password=sha256_crypt.encrypt(password)
-        
     def verify_password(self,password):
         return sha256_crypt.verify(password,self.password)
-    
 class AnonymousUser(AnonymousUserMixin):
     def can(self,perm):
         return False
@@ -77,24 +75,84 @@ class Teachers(db.Model):
 class Courses(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True)
+    path=db.Column(db.String(),unique=True)
     units=db.relationship('Units',backref='courses')
     users=db.relationship('Users',backref='course',lazy=True)#to allow pagination set lazy='dynamic'
 
     def __repr__(self):
         return f'course:{self.name},no of units:{len(self.units)} no of students:{len(self.users )}'
-    
+    def __init__(self,**kwargs):   
+        super(Courses, self).__init__(**kwargs)
+        print(self.name)
+        # course=Courses.query.filter_by(name=self.name).first()
+        # if not course:
+            # self.path=self.make_path()
+    def addsubfolders(self,path):
+        degree_period=4
+        semesters=2
+        for i in range(1,degree_period+1):
+            try:
+                sub_path=os.path.join(path,f'year_{i}')
+                os.mkdir(sub_path)
+            except:
+                print('subfolders couldnt be created')
+                return
+            for sem in range(1,semesters+1):
+                try:
+                    os.mkdir(os.path.join(sub_path,f'sem_{sem}'))
+                except FileNotFoundError:
+                    print('could not make directory')
+                    return
+        
+    def make_path(self,static_folder):
+        path=os.path.join(static_folder,'courses',self.name)
+        if not os.path.isdir(path):
+            try:
+                os.mkdir(path)
+                self.addsubfolders(path)
+            except:
+                path=os.path.join(static_folder,'tobemoved')
+                os.mkdir(path)
+                return path
+        if os.path.isdir(path):
+            self.path=path
+            return path
 
+    def get_path(self):
+        return self.path
 class Units(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True,nullable=False)
     acronym=db.Column(db.String(10),unique=True,index=True)
+    # path=db.Column(db.String(),unique=True,index=True)
     notes=db.relationship('Notes',backref='unit',lazy=True)
     semester=db.Column(db.String(10),index=True)
     year=db.Column(db.Integer,index=True)
     courses_id=db.Column(db.Integer,db.ForeignKey('courses.id'))
     def __repr__(self):
         return f'unit:{self.acronym},year:{self.year},semester:{self.semester},no of notes:{len(self.notes)}'
-   
+    def __init__(self,**kwargs):
+        super(Units,self).__init__(**kwargs)
+        unit=Units.query.filter_by(acronym=self.acronym).first()
+        print(unit)
+        if not unit:
+            self.path=self.make_path()
+    # def make_path(self):
+    #     course=Courses.query.get(self.courses_id)
+    #     path=os.path.join(course.get_path(),f'year_{self.year}',f'sem_{self.semester}',self.acronym)
+    #     if os.path.isdir(path):
+    #         print('path exists:',path)
+    #         return path
+    #     else:
+    #         try:
+    #             os.mkdir(path)
+    #         except:
+    #             print('unable to create path')
+    #             return 
+    #         return path
+    # def get_path(self):
+    #     return self.path
+
 
 class Notes(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
@@ -104,7 +162,8 @@ class Notes(db.Model):
 
     def __repr__(self):
        return f'notes:{self.name},unit-name:[{self.unit.name}]'
-  
+    def get_path(self):
+        return self.path
     
         
         

@@ -18,40 +18,22 @@ def find_course(name):
 def find_unit(unit_prefix):
         unit=Units.query.filter_by(acronym=unit_prefix).first()
         if unit:
-            return (unit.id,unit.path)
+            return (unit.id)
         else:
-            return (None,None)     
+            return (None)     
         
 
               
 def savefile(file,unit_prefix='',toupload=False):
     if toupload:
         path=getuploadpath()
-        print(path)
         try:
             path=os.path.join(path,file.filename)
             file.save(path)
             return {'path':path}
         except Exception as e:
-            print(e)
             return {'error':sys.exc_info()[0]}
-    else:
-        _id,path=find_unit(unit_prefix)
-        if path:
-            file_url=os.path.join(path,file.filename)
-            try:
-                file.save(file_url)
-                notes=Notes(name=file.filename,path=file_url,unit_id=_id)
-                db.session.add(notes)
-                try:
-                    db.session.commit()
-                except:
-                    db.session.rollback()
-            except Exception as e:
-                return {'error':e}
-                
-        else: 
-            return None
+    return None
             #create_new_path(unit)
 def get_notes(course_name):
     course=find_course(course_name)
@@ -60,10 +42,7 @@ def get_notes(course_name):
         units=course.units
         for unit in units:
             for n in unit.notes:
-                url=n.path.split('/')
-                path="/".join(url[url.index('static'):])#conversion of absolute path to relative path
-                print('path',path)
-                notes.append({'unit':unit.acronym,'name':n.name,'url':path})
+                notes.append({'unit':unit.acronym,'name':n.name,'gid':n.gid})
         if len(notes)>0:
             return jsonify({course_name:notes})
     else:
@@ -101,9 +80,7 @@ class CourseNotes(Resource):
     @myapi.doc(body=cnmodel)
     def post(self):
         data=parser.parse_args()
-        print(data)
         data=data.get('course_name')
-        print(data)
         if data:
             course_name=data
             notes=get_notes(course_name)
@@ -125,16 +102,14 @@ class AddCourse(Resource):
                 return {'error':'course already exists'}
             else:
                 c=Courses(name='course_name')
-                path=c.make_path(url_for('static')) 
-
                 db.session.add(c)
                 try:
                     db.session.commit()
-                    return {'success':f'course added path is {path}'}
+                    return {'success':'course updated' }
                 except:
                     db.session.rollback()
         else:
-            return {'error':'missing information'}
+            return {'error':'invalid course information'}
 
 class Uploadlocal(Resource):
     def post(self):
@@ -147,34 +122,40 @@ class Uploadlocal(Resource):
                 return jsonify({'error':'unit not available'})
             elif (error:=res.get('error')):
                 return error    
-        return jsonify({'success':'request complete'})   
+        return jsonify({'success':'request complete'})  
+     
 class Upload(Resource):
     def post(self):
-        uploaded=[]
+       
         files=request.files.getlist('notes')
-        unit=request.headers.get('unit')     
+        unit=request.headers.get('unit') or request.form.get('unit_prefix')
+        unit_id=find_unit(unit)
+        
         if files:
-            drive=FileUploader.getDrive()
+            creds=FileUploader.getcreds()
             for file in files:
-                print(file)
                 res=savefile(file,unit,toupload=True)
-                print(res)
                 if res.get('error'):
-                    print('\n\n',res)
                     return res,500
                 if (path:=res.get('path')):
                     obj=FileUploader(path,file.filename,unit)
-                    obj.driveupload(drive)
+                    id=obj.driveupload(creds)
                     obj.delete_file()
-                    res=obj.getResource(drive)
-                    if res:
-                        print('got data')
-                        uploaded.append(obj.data)
+                    # res=obj.getResource()
+                    if id:
+                       note=Notes(name=obj.name,gid=str(obj.id),unit_id=unit_id)
+                       db.session.add(note)
+                       try:
+                           db.session.commit()
+                           return {'success':'file uploaded succesfully'}
+                       except Exception as e:
+                           db.session.rollback()
+                           return {'error':sys.exc_info()[0]}
+                    else:
+                        return {'error':'an error occured try again later'}
                     
-        return uploaded
-
-    
-
+        return
+      
 class AddMyCourse(Resource):
     @myapi.expect(amcmodel)
     def post(self):
@@ -185,7 +166,7 @@ class AddMyCourse(Resource):
                 user=session.get('user')
             else:
                 user=find_user(email)
-            print('user',user)
+
             course_name=data.get('course_name')
             if user:
                 email=user.email
@@ -209,14 +190,10 @@ class AddMyCourse(Resource):
 class CourseDetails(Resource):
     @myapi.expect(cdmodel)
     def post(self):
-        print('data recieved')
         data=request.json
-        print(data)
-            
         if (em:=data.get('email')):
             user=find_user(em)
             if user and (course:=user.course):
-                print('user and course found')
                 # session['user']=user
                 return {'course':course.name}
             elif not user:
@@ -228,7 +205,6 @@ class CourseDetails(Resource):
                     db.session.rollback()
                     return {'error':'user could not be created'}
                 # session['user']=user
-                print('new user created')
                 return {'course_name':None}
             else:
                 return {'course_name':None}
@@ -242,10 +218,9 @@ class AllCourses(Resource):
         data=[course.name for course in courses]
         return {"courses":data}
 class AllNotes(Resource):
-    
     def get(self):
         notes=Notes.query.all()
-        data=[{'name':note.name,"url":"/".join(note.path.split('/')[-8:]),'unit':note.unit.name} for note in notes]
+        data=[{'name':note.name,"gid":note.gid,'unit':note.unit.name} for note in notes]
         return {"notes":data}    
 class GetUnits(Resource):
     @myapi.expect(cnmodel)
@@ -266,7 +241,8 @@ myapi.add_resource(CourseNotes,'/course_notes')
 myapi.add_resource(AddCourse,'/add_course')
 myapi.add_resource(CourseDetails,'/course_details')
 myapi.add_resource(GetUnits,'/units')
-myapi.add_resource(Upload,'/add_notes')
+myapi.add_resource(Upload,'/upload_notes')
 myapi.add_resource(AddMyCourse,'/add_mycourse')
 myapi.add_resource(AllNotes,'/all_notes')
+
 
