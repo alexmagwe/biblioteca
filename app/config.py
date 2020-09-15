@@ -1,6 +1,5 @@
 import os
-from . import getrootpath
-rootpath=getrootpath()
+rootpath=os.path.abspath(os.path.dirname(__file__))
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS=False
     SQL_ALCHEMY_COMMIT_ON_TEARDOWN=True    
