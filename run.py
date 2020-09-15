@@ -1,3 +1,3 @@
-from app import app
+from .factory import app
 if __name__=='__main__':
-    app.run()
+    app.run()s
