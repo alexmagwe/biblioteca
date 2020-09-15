@@ -1,4 +1,5 @@
 import pprint
+from flask import current_app
 from google.cloud import storage
 from apiclient.http import MediaFileUpload
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -11,7 +12,9 @@ from notes01.app import getuploadpath
 import os.path
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
-SERVICE_ACCOUNT_FILE = 'secrets.json'
+# SERVICE_ACCOUNT_FILE = 'secrets.json'
+SERVICE_ACCOUNT_FILE = 'google-credentials.json'
+
 
 class FileUploader:
     @staticmethod

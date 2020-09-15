@@ -11,3 +11,4 @@ secrets.json
 mycreds.txt
 token.pickle
 notes.code-workspace
+google-credentials.json
