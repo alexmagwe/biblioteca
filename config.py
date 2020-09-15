@@ -22,7 +22,6 @@ class Development(Config):
     SQLALCHEMY_DATABASE_URI='sqlite:///'+os.path.join(rootpath,DB_NAME+'.sqlite')
 class Production(Config):
     SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL')
-    FLASK_APP='run.py'
     MAIL_USE_TLS=True
     MAIL_SERVER='smtp.mailtrap.io'
     MAIL_PORT=2525
