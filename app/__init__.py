@@ -8,7 +8,7 @@ import os
 from flask_admin import Admin
 # from flask_mongoengine import MongoEngine
 from flask_sqlalchemy import SQLAlchemy
-from notes01.config import configs
+from .config import configs
 from flask_bootstrap import Bootstrap
 meta = MetaData(naming_convention={
         "ix": "ix_%(column_0_label)s",
@@ -36,12 +36,16 @@ def create_app():
     migrate.init_app(app,db,render_as_batch=True)
     db.init_app(app)
     bootstrap.init_app(app)
-    from notes01.app.api import api
+    from .api import api
     app.register_blueprint(api) 
-    from notes01.app.auth import auth
+    from .auth import auth
     app.register_blueprint(auth,url_prefix='/auth')
     return app
             
 def getuploadpath():
   path=os.path.join(os.path.dirname(__file__),'static/toupload')
   return path
+def getrootpath():
+    rootpath=os.path.abspath(os.path.dirname(__file__))
+    return rootpath
+    

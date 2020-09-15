@@ -8,7 +8,7 @@ from google.oauth2 import service_account
 from google.auth.transport.requests import Request
 import pickle
 import requests
-from notes01.app import getuploadpath
+from .. import getuploadpath
 import os.path
 
 SCOPES = ['https://www.googleapis.com/auth/drive.file']

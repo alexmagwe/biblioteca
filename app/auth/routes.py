@@ -3,12 +3,12 @@ from  __future__ import print_function
 from . import auth
 import os
 from google.auth.exceptions import RefreshError
-from notes01.app import login_manager
+from .. import login_manager
 from flask import render_template,url_for,redirect,abort,session,current_app,request,flash
 from flask_login import current_user,login_user,logout_user,login_required,UserMixin
 import requests,json
 from oauthlib.oauth2 import WebApplicationClient
-from notes01.app.models import Users,AdminsList
+from ..models import Users,AdminsList
 from .forms import AdminForm
 import pickle
 from .authflow import authflow

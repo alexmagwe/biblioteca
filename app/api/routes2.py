@@ -1,7 +1,7 @@
 from flask import Flask,jsonify,request,url_for,render_template,session,current_app
 import requests
 from flask_login import current_user
-from notes01.app import login_manager,db,getuploadpath
+from .. import login_manager,db,getuploadpath
 from . import api,myapi
 import requests,sys
 from flask_restx import Resource,reqparse,fields
