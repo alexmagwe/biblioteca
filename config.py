@@ -23,6 +23,7 @@ class Development(Config):
 class Production(Config):
     SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL')
     MAIL_USE_TLS=True
+    FLASK_ENV='production'
     MAIL_SERVER='smtp.mailtrap.io'
     MAIL_PORT=2525
     MAIL_PASSWORD= 'a0ad48ed8fb0a0'

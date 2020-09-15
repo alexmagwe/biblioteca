@@ -16,6 +16,8 @@ manager.add_command('db',MigrateCommand)
 @app.context_processor
 def inject_permissions():
     return dict(Permissions=Permissions)
-if __name__=='__main__':    
+if os.environ.get('FLASK_ENV')=='production':
+    app.run()
+else:   
     manager.run()
 

@@ -1,1 +1,1 @@
-web:gunicorn factory:manager
+web:flask db upgrade;gunicorn run:app
