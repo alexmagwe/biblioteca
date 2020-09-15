@@ -29,7 +29,7 @@ migrate=Migrate()
 
 def create_app():
     app=Flask(__name__)
-    app.config.from_object(configs['development'])
+    app.config.from_object(configs['production'])
     mail.init_app(app)
     login_manager.init_app(app)
     admin.init_app(app)

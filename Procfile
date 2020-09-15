@@ -1,1 +1,1 @@
-web:gunicorn factory:app
+web:gunicorn factory:manager
