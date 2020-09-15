@@ -5,11 +5,11 @@
     <input id='name' type='text' name='course_name'>
     <button type="submit">search</button>
 </form>
-<ul>
+<ul id='notes-list'>
 </ul>
 <script>
     window.addEventListener('load', () => {
-        let list = document.querySelector('ul')
+        let list = document.querySelector('#notes-list')
         let form = document.querySelector('#coursenotes');
         form.addEventListener('submit', e => {
             e.preventDefault();
@@ -27,36 +27,35 @@
                     body: JSON.stringify(payload)
                 }*/
 
-            fetch('/course_notes?name=' + name)
+            fetch('/course_notes',{
+                method:'POST',
+                headers:{
+                'Content-Type':'application/json',
+                },
+                body:JSON.stringify({'course_name':name})
+                    }
+                )
                 .then(resp => resp.json())
                 .then(data => {
                     if (data['error']) {
                         console.log(data['error'])
                     } else {
                         console.log(data)
-                        let notes = data[name];
-                        console.log(data[name])
+                        let notes = data;
                         notes.forEach(el => {
-                            console.log(el)
                             let item = document.createElement('li')
-
-                            let link = document.createElement('a')
                             let view = document.createElement('a')
 
-                            link.href = el.url
-                            link.innerHTML = 'Download'
-                            view.href = el.url
-                            link.download = el.name
+                            
+                            view.href = `https://drive.google.com/file/d/${el.gid}/view`
                             view.innerHTML = 'View'
                             view.target = '_blank'
                             view.type = 'application/pdf'
                             view.classList += 'view'
-
-                            link.classList += 'download'
                             item.innerHTML = el.name
-                            item.appendChild(link)
                             item.appendChild(view)
                             list.appendChild(item)
+
 
 
                         })

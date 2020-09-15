@@ -7,7 +7,7 @@ notes
 .
 ..
 mycreds.txt
-client_secrets.json
 secrets.json
 mycreds.txt
 token.pickle
+notes.code-workspace

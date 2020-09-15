@@ -19,16 +19,6 @@ from google.auth.transport.requests import Request
 def get_google_config():
     return  requests.get(current_app.config['GOOGLE_DISCOVERY_URL']).json()
 
-@auth.route('/home')
-@auth.route('/')
-def home():
-    if current_user.is_authenticated:
-        return render_template('home.html')
-    else:
-        return render_template('landing.html')
-@auth.route('/')
-def student():
-    return render_template('home.html')
 
 @auth.route('/login',methods=['POST','GET'])
 def login():
@@ -47,7 +37,7 @@ def callback():
         login_user(user)
     else:
         abort(403,'You are not an admin')
-    return redirect(url_for('auth.home'))
+    return redirect(url_for('api.home'))
   
 
 
@@ -66,4 +56,4 @@ def add_admin():
 @auth.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('auth.home'))
+    return redirect(url_for('api.home'))

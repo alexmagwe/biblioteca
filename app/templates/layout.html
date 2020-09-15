@@ -1,7 +1,6 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 
@@ -10,23 +9,35 @@
 
     <!-- Popper JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
+<title>{{title}}</title>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+       <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+
     <meta charset='UTF-8'>
 </head>
 
 <body>
-    <div>
         <header>
-            <nav id='nav'>
-                <div class='nav-items-left'><a href='/'>Home</a>
-                </div>
-                {%if current_user.is_anonymous%}
-                <div class='nav-items'><a href="{{url_for('auth.login')}}" id='login'>Login</a>{%else%}
-                    <div class='nav-items'><a href="{{url_for('auth.logout')}}">Logout</a> {%endif%} {%if current_user.is_authenticated%}
-                    </div>
-                    <div id="icon"><img id='img' src='https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png' alt='Google profile'></div> {%endif%} </nav>
+            <div id='nav'>
+                <div class='nav-items'><a href='/'>Home</a> </div>
+                <ul class="nav-right">
+                    <li class='nav-items'><a href="/docs" id='docs'>Docs</a></li>
+                    {%if current_user.is_anonymous%}
+                    <li class='nav-items'><a href="{{url_for('auth.login')}}" id='login'>Login</a></li>
+                    {%else%}
+                     {%if current_user.is_admin%}
+                    <li class='nav-items'><a href="/admin" id='login'>Dashboard</a></li>
+                    {%endif%}
+                    <li class='nav-items'><a href="{{url_for('auth.logout')}}">Logout</a> </li>
+                    <li id="icon"><img id='img' src='https://cdn1.iconfinder.com/data/icons/user-pictures/100/unknown-512.png' alt='Google profile'></li> 
+                    {%endif%}
+               </ul>
+
+    
+            </div>
+
+                   
 
             {% block notifications%} {%for category,message in get_flashed_messages(with_categories=True)%}
             <div class=' alert alert-{{category}}'>
@@ -37,16 +48,7 @@
             <div class="modal"></div>
             {%endblock%}
 
-
-
-
-
-
-
         </header>
-
 </body>
-<script>
-</script>
 
 </html>

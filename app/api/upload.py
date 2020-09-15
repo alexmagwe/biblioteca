@@ -21,10 +21,10 @@ class FileUploader:
         return creds
         
 
-    def __init__(self,file,name,unit,urls={},*args,**kwargs):
+    def __init__(self,file,name,code,urls={},*args,**kwargs):
      
         self.file=file
-        self.unit=unit
+        self.unit=code
         self.name=name
         self.urls=urls
         self.uploadpath=os.path.join(getuploadpath(),self.name)
@@ -44,12 +44,12 @@ class FileUploader:
                                 mimetype='application/pdf',
                                 resumable=True
                                 )
-        id=drive.files().create(body=file_metadata,
+        res=drive.files().create(body=file_metadata,
                                             media_body=media,
                                             fields='id').execute()
         
-        self.id=id 
-        return id 
+        self.id=res.get('id')
+        
 
         
     def delete_file(self):
@@ -62,11 +62,4 @@ class FileUploader:
                 print(sys.exec_info()[0])
         else:
             print('file not found ')
-        
-    
-    def cloud_upload(self,bucket_name):
-        name=self.name
-        storage_client=storage.Client()
-        bucket=storage_client.bucket(bucket_name)
-        blob=bucket.blob(name)
-        blob.upload_from_file(self.file)
+  

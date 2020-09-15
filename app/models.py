@@ -127,7 +127,7 @@ class AdminView(ModelView):
 admin.add_view(AdminView(AdminsList,db.session))
 admin.add_view(AdminView(Teachers,db.session))
 
-admin.add_view(ModelView(Courses,db.session))
-admin.add_view(ModelView(Users,db.session))
-admin.add_view(ModelView(Units,db.session))
-admin.add_view(ModelView(Notes,db.session))
+admin.add_view(AdminView(Courses,db.session))
+admin.add_view(AdminView(Users,db.session))
+admin.add_view(AdminView(Units,db.session))
+admin.add_view(AdminView(Notes,db.session))

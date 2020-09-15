@@ -4,6 +4,9 @@
     padding: 0;
     text-decoration: none;
 }
+ul{
+    list-style: none;
+}
 
 @font-face {
     font-family: fira;
@@ -37,46 +40,44 @@
 
 body {
     padding: 1em;
+    color:#fff;
 }
 
 #nav {
-    padding: 10px 3em;
+    padding:2em;
     background-color: transparent;
     display: flex;
-    margin-bottom: 1em;
+    justify-content: space-between;
     width: 100%;
+    z-index:100;
+    flex-wrap: wrap;
+    height:4em;
     align-items: center;
-    font-family: firaHair;
+    font-family:  fira;
     font-size: 24px;
-    color: black;
+    color: #eee;
     /* border: 1px solid red; */
 }
-
-.nav-items {
-    color: inherit;
-    font-family: inherit;
-    font-size: inherit;
-    padding: 5px;
-    margin-left: auto;
+#nav .nav-right{
+    display:flex;
+    height:100%;
+    justify-content: space-evenly;
+    width:30%;
+    align-items: center;
+     color:#eee;
 }
 
-#nav a {
+#nav .nav-items {
+    color: #eee;
+    font-size: inherit;
+    padding: 5px;
+
     font-weight: 600;
     font-family: inherit;
-    color: rgb(66, 63, 63);
     transition: color 0.3s ease-in-out;
 }
-
-#nav a:hover {
-    color: #000;
-}
-
-.nav-items-left {
-    color: inherit;
-    font-family: inherit;
-    font-size: inherit;
-    padding: 5px;
-    justify-self: flex-start;
+#nav .nav-right .nav-items:hover {
+    color: rgb(141, 85, 1);
 }
 
 #icon {
@@ -105,7 +106,29 @@ body {
     width: 15px;
     height: 100%;
 }
+.landing{
+    position:absolute;
+    top:0;
+    z-index:-1;
+    left:0;
+    min-height: 100vh;
+    width:100%;
+    color:#eee;
+    text-align:center;
+    font-family:os-Bold ;
+    background-image:linear-gradient(rgba(0, 0, 0, 0.4),rgba(0,0,0,0.4)),url(./imgs/library.jpg);
+    background-size: cover;
+    background-position: center;
+}
+.landing h1{
+    position: absolute;
+    font-family: inherit;
+    top:50%;
+    left:50%;
+    margin:auto;
+    transform:translate(-50%);
 
+}
 h3 {
     padding: 10px;
     font-family: firaHair;
@@ -157,4 +180,25 @@ h3 {
 .semester {
     margin-left: 0.5em;
     padding: 10px;
+}
+/* .form-container{
+    width:40%;
+    margin:auto;
+    transform:translateY(10%);
+} */
+.add-admin-form{
+    width:100%;
+    padding:2em;
+    max-height:90vh;
+    color:#fff;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4),rgba(0,0,0,0.4)),url(./imgs/banner.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+@media only screen and (min-width:700px){
+.add-admin-form .form-container{
+    width:40%;
+      margin:auto;
+    transform:translateY(10%);
+}
 }

@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired,Email,ValidationError
 
 class AdminForm(FlaskForm):
     email=StringField('Email',validators=[DataRequired(),Email()])
-    submit=SubmitField('Add')
+    submit=SubmitField('Invite')
     def validate_email(self,email):
         user=AdminsList.query.filter_by(email=email.data).first()
         if user is not None:
