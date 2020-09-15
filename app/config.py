@@ -8,7 +8,7 @@ class Config:
     GOOGLE_DISCOVERY_URL="https://accounts.google.com/.well-known/openid-configuration"
 class Development(Config):
     SECRET_KEY=os.environ.get('SECRET_KEY')
-    DB_NAME=os.environ.get('DB_NAME')
+    DB_NAME='notes1.0'
     DB_SERVER='localhost'
     MAIL_SERVER='smtp.mailtrap.io'
     MAIL_PORT=2525
