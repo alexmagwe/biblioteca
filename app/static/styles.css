@@ -38,47 +38,48 @@ ul{
     src: url('fonts/OpenSans-Light.ttf')
 }
 
-body {
-    padding: 1em;
-    color:#fff;
+/* body {
 }
 
 #nav {
-    padding:2em;
     background-color: transparent;
     display: flex;
-    justify-content: space-between;
+    justify-content:space-between;
     width: 100%;
-    z-index:100;
     flex-wrap: wrap;
-    height:4em;
+    height:3em;
     align-items: center;
-    font-family:  fira;
+    font-family:  openSansLight;
     font-size: 24px;
-    color: #eee;
-    /* border: 1px solid red; */
+    color: #eee !important;
+    border: 1px solid red;
 }
 #nav .nav-right{
     display:flex;
     height:100%;
     justify-content: space-evenly;
     width:30%;
+    flex-wrap: wrap;
     align-items: center;
-     color:#eee;
+     color:inherit;
+    border: 1px solid rgb(165, 115, 115);
+}
+.nav-left{
+    align-self: center;
 }
 
 #nav .nav-items {
-    color: #eee;
-    font-size: inherit;
-    padding: 5px;
-
+    color: inherit;
+    z-index:0;
     font-weight: 600;
+    border:1px solid green;
+    height:auto;
     font-family: inherit;
     transition: color 0.3s ease-in-out;
 }
 #nav .nav-right .nav-items:hover {
     color: rgb(141, 85, 1);
-}
+} */
 
 #icon {
     width: 50px;
