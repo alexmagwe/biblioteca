@@ -1,5 +1,5 @@
 import unittest
-from .app.models import Users,Permissions,AnonymousUser
+from app.models import Users,Permissions,AnonymousUser
 class TestPermissions(unittest.TestCase):
     def test_role(self):
         user=Users(email='alexmagwe@gmail.com',password='random')
