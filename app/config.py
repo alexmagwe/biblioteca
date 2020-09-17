@@ -27,6 +27,7 @@ class Production(Config):
     FLASK_ENV='production'
     MAIL_SERVER='smtp.mailtrap.io'
     MAIL_PORT=2525
+    SECRET_KEY=os.environ.get('SECRET_KEY')
     MAIL_PASSWORD= 'a0ad48ed8fb0a0'
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
   
