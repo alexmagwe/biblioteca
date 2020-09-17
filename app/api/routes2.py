@@ -40,7 +40,10 @@ def savefile(file,code='',toupload=False):
             path=os.path.join(path,file.filename)
             file.save(path)
             return {'path':path}
+            print('saved file')
+            print(path)
         except Exception as e:
+            print(e)
             return {'error':sys.exc_info()[0]}
     return None
             #create_new_path(unit)
@@ -172,6 +175,7 @@ class Upload(Resource):
     def post(self):
        
         files=request.files.getlist('notes')
+        print(files)
         code=request.headers.get('unit_code') or request.form.get('unit_code')
         unit_id=find_unit(code).id
         print(unit_id)
@@ -201,7 +205,8 @@ class Upload(Resource):
                            return {'error':sys.exc_info()[0]}
                     else:
                         return {'error':'an error occured try again later'}
-                    
+        else:
+            return {'error':'files no files present'}
         return {'success':'file(s) uploaded succesfully'}
 
       
