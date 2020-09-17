@@ -14,6 +14,6 @@ manager.add_command('db',MigrateCommand)
 @app.context_processor
 def inject_permissions():
     return dict(Permissions=Permissions)
-if __name__=='__main__':
-    manager.run()
+# if __name__=='__main__':
+#     manager.run()
 
