@@ -44,7 +44,7 @@ def create_app():
     return app
             
 def getuploadpath():
-  path=os.path.abspath('tmp')
+  path='/tmp'
   return path
 
     
