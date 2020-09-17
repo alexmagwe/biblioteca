@@ -1,7 +1,7 @@
 from app import create_app
 from flask_migrate import Migrate,MigrateCommand
 from flask_script import Shell,Manager
-from .models import Users,Courses,Permissions,Units,Notes,AdminsList
+from app.models import Users,Courses,Permissions,Units,Notes,AdminsList
 app=create_app()
 manager=Manager(app)
 # @app.shell_context_processor
