@@ -32,11 +32,18 @@ def callback():
     googleprovider=get_google_config()
     user_data=authflow(googleprovider,client)
     user=Users.query.filter_by(email=user_data['email']).first()
-  
-    if user.is_admin:
+    admin=AdminsList.query.filter_by(email=user_data['email']).first()
+
+    if user and user.is_admin:
         login_user(user)
+    elif admin and not user:
+        u=Users(email=user_data['email'])
+        res=u.register()
+        if res:
+            n=Users.query.filter_by(email=user_data['email']).first()
+            login_user(n)
     else:
-        abort(403,'You are not an admin')
+        abort(403,'Unauthorized access')
     return redirect(url_for('api.home'))
   
 

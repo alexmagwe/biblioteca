@@ -26,7 +26,16 @@ class Users(db.Model,UserMixin):
             admin=AdminsList.query.filter_by(email=self.email).first()
             if admin:
                 self.permissions=Permissions.ADMIN+Permissions.ADDNOTES+Permissions.MYNOTES
-            
+    
+    def register(self):
+        db.session.add(self)
+        try:
+            db.session.commit()
+            return True
+        except Exception as e:
+            db.session.rollback()
+            return False
+                
     def can(self,perm):
         return self.permissions is not None and self.has_permission(perm)
     def has_permission(self,p):
