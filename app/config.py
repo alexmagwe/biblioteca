@@ -2,7 +2,8 @@ import os
 rootpath=os.path.abspath(os.path.dirname(__file__))
 class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS=False
-    SQL_ALCHEMY_COMMIT_ON_TEARDOWN=True    
+    SQL_ALCHEMY_COMMIT_ON_TEARDOWN=True   
+    FLASK_APP=os.environ.get('FLASK_APP') 
     GOOGLE_CLIENT_ID=os.environ.get('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET=os.environ.get('GOOGLE_CLIENT_SECRET')
     GOOGLE_DISCOVERY_URL="https://accounts.google.com/.well-known/openid-configuration"
