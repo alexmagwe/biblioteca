@@ -67,12 +67,6 @@ class AdminsList(db.Model):
         except Exception as e:
             return {'error':e}
         
-
-class Teachers(db.Model):
-    id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
-    email=db.Column(db.String(30),index=True,nullable=False)
-    def __repr__(self):
-        return f'email:{self.email}'
     
 class Courses(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
@@ -125,8 +119,6 @@ class AdminView(ModelView):
 # admin.add_view(AdminView(Courses,db.session))
 # admin.add_view(AdminView(Units,db.session))
 admin.add_view(AdminView(AdminsList,db.session))
-admin.add_view(AdminView(Teachers,db.session))
-
 admin.add_view(AdminView(Courses,db.session))
 admin.add_view(AdminView(Users,db.session))
 admin.add_view(AdminView(Units,db.session))
