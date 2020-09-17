@@ -44,7 +44,8 @@ def create_app():
     return app
             
 def getuploadpath():
-  path=os.path.join(os.path.dirname(__file__),'static/toupload')
+  print('current working dir',os.getcwd())
+  path=os.path.join(os.path.dirname(__file__),'static/toupload')[4:]
   return path
 
     
