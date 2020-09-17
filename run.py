@@ -1,8 +1,8 @@
-from .app import create_app,db
+from app import create_app,db
 import unittest
-from .app.models import Users,Courses,Permissions,Units,Notes,AdminsList
+from app.models import Users,Courses,Permissions,Units,Notes,AdminsList
 from flask_migrate import Migrate,upgrade
-from .tests import *
+
 
 app=create_app()
 migrate=Migrate(app,db)
