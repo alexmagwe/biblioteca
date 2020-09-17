@@ -23,10 +23,7 @@ class Users(db.Model,UserMixin):
     def __init__(self,*args,**kwargs):
         super(Users,self).__init__(*args,**kwargs)
         if self.permissions is None:
-            teacher=Teachers.query.filter_by(email=self.email).first()
             admin=AdminsList.query.filter_by(email=self.email).first()
-            if teacher:
-                self.permissions=Permissions.ADDNOTES+Permissions.MYNOTES
             if admin:
                 self.permissions=Permissions.ADMIN+Permissions.ADDNOTES+Permissions.MYNOTES
             
