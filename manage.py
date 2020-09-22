@@ -1,8 +1,8 @@
-from app import create_app
+from .app import create_app,db
 from flask_migrate import Migrate,MigrateCommand
 from flask_script import Shell,Manager
-from app.models import Users,Courses,Permissions,Units,Notes,AdminsList
-app=create_app()
+from .app.models import Users,Courses,Permissions,Units,Notes,AdminsList
+app=create_app('development')
 manager=Manager(app)
 @app.shell_context_processor
 def make_shell_context():
