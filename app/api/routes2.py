@@ -29,9 +29,7 @@ def find_file(name):
         return True
     else:
         return False
-
-
-    
+     
 # reason for passing code as a param even though its not used is for local server storage if its ever implemented
 def savefile(file,code='',toupload=False):
     if toupload:
@@ -61,37 +59,6 @@ def get_notes(course_name):
         return None
 
 
- 
-
-
-@api.route('/home')
-@api.route('/')
-def home():
-    if current_user.is_authenticated:
-        return render_template('landing.html',title='Biblioteca')
-    else:
-        return render_template('documentation.html',title='Biblioteca')
-
-                           
-@api.route('/new_course',methods=['GET'])
-def new_course():
-    return render_template('addcourse.html',title='Addcourse')
-
-
-@api.route('/find_notes',methods=['GET'])
-def find_notes():
-    return render_template('notes.html',title='Notes')
-    
-
-@api.route('/upload_notes',methods=['GET'])
-def upload_notes():
-    return render_template('upload.html',title='Uploader')
-# @api.route('/admin',methods=['GET','POST'])
-# def adminpanel():
-#     if current_user.is_authenticated and current_user.is_admin:
-#         return render_template('admin/admin.html')
-#     else:
-#         return redirect(url_for('auth.home'))
 
 parser=reqparse.RequestParser()
 parser.add_argument('course_name',type=str,help='course name required')

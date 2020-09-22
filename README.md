@@ -7,6 +7,7 @@ students can view notes related to their course and also other courses
 personalized interface for easy navigation
 
 ##### Features remaining
+* documentation 
 * admin dashboard
 * User interface
 * Web scraping course information for the database
