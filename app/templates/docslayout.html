@@ -29,7 +29,17 @@
                     <span class="navbar-toggler-icon"></span>
                 </button> 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ml-auto">
+                        <li  class="nav-item dropdown d-lg-none d-sm-block">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Navigation</a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a href="#section-1" class="sidebar-link dropdown-item"> Authentication</a>
+                                <a href="#upload-section" class="sidebar-link dropdown-item">Upload</a>
+                                          <div class="dropdown-divider"></div>
+                                <a href="#upload-single" class="sidebar-sub-link dropdown-item ml-1">Single upload</a>
+                                <a href="#upload-multiple" class="sidebar-sub-link dropdown-item ml-1">Multiple upload</a>
+                            </div>
+                        </li>
                     <li class='nav-item'><a class='nav-link' href="/docs" id='docs'>Try</a></li>
                     {%if current_user.is_anonymous%}
                     <li class='nav-item'><a class='nav-link' href="{{url_for('auth.login')}}" id='login'>Login</a></li>

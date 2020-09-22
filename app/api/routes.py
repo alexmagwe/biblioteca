@@ -1,6 +1,6 @@
 from flask import url_for,render_template,current_app
 from flask_login import current_user
-from . import api,myapi
+from . import myapi,api
 
 
 @api.route('/home')
@@ -25,3 +25,7 @@ def find_notes():
 @api.route('/upload_notes',methods=['GET'])
 def upload_notes():
     return render_template('upload.html')
+
+@api.route('/upload_docs',methods=['GET'])
+def upload_docs():
+    return render_template('doc.html')
