@@ -7,9 +7,10 @@ students can view notes related to their course and also other courses
 personalized interface for easy navigation
 
 ##### Features remaining
-* documentation 
 * admin dashboard
 * User interface
+* code refactoring maybe
 * Web scraping course information for the database
+* create a backup db 
  
 Participation is highly encouraged, feel free to contact me so we can colab and bring this thing to life

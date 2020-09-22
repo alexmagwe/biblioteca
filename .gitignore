@@ -12,3 +12,4 @@ secrets.json
 mycreds.txt
 token.pickle
 *.sqlite
+google-credentials.json
