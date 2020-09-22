@@ -11,3 +11,4 @@ client_secrets.json
 secrets.json
 mycreds.txt
 token.pickle
+*.sqlite
