@@ -280,7 +280,7 @@ class AddUnit(Resource):
                 else:
                     return {'error':'try again later'}
             elif not unit and not course:
-                return {'error':f'{data.get('course_name')} not found'}
+                return {'error':f"{data.get('course_name')} not found"}
             else:
                 return
         else:
