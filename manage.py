@@ -1,4 +1,5 @@
-from app import create_app,db
+from app import db
+from run import app
 from flask_migrate import Migrate,MigrateCommand
 from flask_script import Shell,Manager
 from app.models import Users,Courses,Permissions,Units,Notes,AdminsList
