@@ -12,5 +12,6 @@ personalized interface for easy navigation
 * code refactoring maybe
 * Web scraping course information for the database
 * create a backup db 
+* writing tests
  
 Participation is highly encouraged, feel free to contact me so we can colab and bring this thing to life
