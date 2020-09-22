@@ -69,9 +69,9 @@ class AdminsList(db.Model):
         db.session.add(self)
         try:
             db.session.commit()
-            return {'success':'admin addded succesfully'}
+            return True
         except Exception as e:
-            return {'error':sys.exc_info()[0]}
+            return False
         
     
 class Courses(db.Model):
