@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_login import UserMixin,AnonymousUserMixin,current_user
 from flask import current_app,redirect,url_for
 from passlib.hash import sha256_crypt
-import os
+import os,sys
 
 class Permissions:
     ADMIN=16
@@ -71,7 +71,7 @@ class AdminsList(db.Model):
             db.session.commit()
             return {'success':'admin addded succesfully'}
         except Exception as e:
-            return {'error':e}
+            return {'error':sys.exc_info()[0]}
         
     
 class Courses(db.Model):
