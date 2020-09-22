@@ -1,0 +1,83 @@
+{% extends 'docslayout.html'%}
+{%block content%}   
+<div class="docs-container">
+   
+            <div class="docs-side-bar">
+                <a href="#section-1" class="sidebar-link">Authentication</a>
+                <a href="#upload-section" class="sidebar-link">Upload</a>
+                <a href="#upload-single" class="sidebar-sub-link">Single Upload</a>
+                <a href="#upload-multiple" class="sidebar-sub-link">Multiple upload</a>
+            </div>
+            <div id="sections">
+                <div id='section-1' class="section">
+                    <h2>Authentication</h2>
+                    <p>
+                        All requests must be done over https 
+                </p>
+                
+                </div>
+                <div id='upload-section' class="section">
+                <h2>Upload</h2>
+                    <p>
+                        To upload a file send a POST request to <i class='text-primary'>/upload</i>.
+                        the payload of the request should be form data with a file object named <i>"notes"</i> 
+                        <br>
+                    <br>
+                    To send multiple files,the "notes" object in the form data should be an array of file objects
+                    <br>
+                    <br>
+                    The unit code for the file must be sent with the request,it can be included in the headers of the request or as part of the form data <br>
+        
+                </p>
+                
+                <p id='upload-single'>   <h5>Uploading single file in javascript using axios</h5>
+
+                    <code>
+                        file=(file object); <br>
+                        let formData=new formData(); <br>
+                        formdata.append('notes',file);<br>
+                        &nbsp;<b>axios.post('/upload',formData,<br>
+                        &nbsp;{ <br>
+                            &nbsp;headers:{"Content-Type":"multipart/form-data",<span style='color:rgb(47, 102, 255)'>unit=unit_code</span>} <br>
+                        &nbsp;} </b><br>
+                        )
+                        </code></p>
+                        <p>
+                            <h5>Adding the unit code as part of form data</h5>
+                        <code>
+                        unit_code='some unit' <br>
+                        file=(file object); <br>
+                        let formData=new formData(); <br>
+                        formdata.append('notes',file);<br>
+                        formdata.append('unit',<span style='color:rgb(47, 102, 255)'>unit=unit_code</span>);<br> <br>
+                        &nbsp <b> axios.post('/upload',formData,<br>
+                        &nbsp;{ <br>
+                            &nbspheaders:{"Content-Type":"multipart/form-data"} <br>
+                        &nbsp;} </b><br>
+                        )
+                        </code></p>
+                            
+                <p>  <h5 id='upload-multiple'>Uploading Multiple files</h5>
+                        the files should be saved in a list then each file appended independently to the formData <br>
+                        the array of files should not be added directly to the form data but iterated over appending each individually <br>
+                        <br>
+                        <code>
+                        files=[file1,file2,file3]; <br>
+                        let formData=new formData(); <br>
+                        files.forEach(file=>formdata.append('notes',file));<br>
+                        &nbsp<b>axios.post('/upload',formData,<br>
+                        &nbsp;{ <br>
+                            &nbsp;headers:{"Content-Type":"multipart/form-data",<span style='color:rgb(47, 102, 255)'>unit=unit_code</span>} <br>
+                        &nbsp;} </b><br>
+                        )
+                        </code>
+                </p>
+
+        
+                </div>
+                <div id='section-3' class="section">
+
+                </div>
+            </div>
+    </div>
+{%endblock%}

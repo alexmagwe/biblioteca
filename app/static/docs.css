@@ -1,0 +1,43 @@
+.docs-container {
+    display: flex;
+    position:relative;
+    justify-content: space-between;
+}
+
+.docs-side-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: sticky;
+    align-items:flex-start;
+    top: 0;
+    padding:15px;
+    width: 15%;
+    min-height: 100vh;
+
+}
+.docs-top-bar{
+    position:absolute;
+    top:0;
+    /* display:none; */
+}
+.sidebar-link{
+    margin-top:1em;
+}
+.sidebar-sub-link {
+    margin-left:15px;
+ 
+}
+
+#sections {
+    flex: 1;
+    height: 100%;
+}
+@media screen and (max-width:700px){
+    .docs-side-bar{
+        display:none;
+    }
+    .docs-top-bar{
+        display: block;
+    }
+}

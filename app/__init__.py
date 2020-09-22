@@ -27,9 +27,9 @@ login_manager.login_view='auth.login'
 login_manager.login_message_category='info'
 migrate=Migrate()
 
-def create_app():
+def create_app(env='development'):
     app=Flask(__name__)
-    app.config.from_object(configs['production'])
+    app.config.from_object(configs[env])
     mail.init_app(app)
     login_manager.init_app(app)
     admin.init_app(app)
@@ -44,7 +44,7 @@ def create_app():
     return app
             
 def getuploadpath():
-  path=os.path.join(os.path.dirname(__file__),'static/toupload')
+  path='/tmp'
   return path
 
     

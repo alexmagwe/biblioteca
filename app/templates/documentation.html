@@ -1,3 +1,8 @@
 {%extends 'layout.html'%}
 {%block content%}
+<div class='api-home container'>
+<h3>University of Nairobi notes API</h3>
+<p>Documentation for all the endpoints except from upload endpoint is done using swagger ui <a href="/docs">here</a> <br>
+Documentation for uploading files <a href="{{url_for('api.upload_docs')}}">upload docs</a>
+</p></div>
 {%endblock%}
