@@ -94,6 +94,16 @@ class Units(db.Model):
     courses_id=db.Column(db.Integer,db.ForeignKey('courses.id'))
     def __repr__(self):
         return f'unit:{self.acronym},year:{self.year},semester:{self.semester},no of notes:{len(self.notes)}'
+    def add(self):
+        db.session.add(self)
+        try:
+            db.session.commit()
+            return True
+        except:
+            db.session.rollback()
+            return False
+            
+        
    
 
 class Notes(db.Model):
