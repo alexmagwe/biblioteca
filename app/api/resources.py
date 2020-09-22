@@ -70,8 +70,7 @@ acmodel=myapi.model('AddCourse',{'course_name':fields.String()})
 cdmodel=myapi.model('CourseDetails',{'email':fields.String()})
 amcmodel=myapi.model('AddMyCourse',{'email':fields.String(),'course_name':fields.String()})
 cnmodel=myapi.model('CourseNotes',{'course_name':fields.String()})
-aumodel=myapi.model('AddUnits',{'course_name':fields.String(),'name':fields.String(),'semester'=fields.String(),'unit_code':fields.String(),year=fields.Integer()})
-
+aumodel=myapi.model('AddUnit',{'course_name':fields.String(),'name':fields.String(),'semester':fields.String(),'unit_code':fields.String(),'year':fields.Integer()})
 unmodel=myapi.model('UnitNotes',{'unit_code':fields.String()})
 # uploadmodel=myapi.model('Upload',{'headers':'unit'})
 
