@@ -33,8 +33,10 @@ def create_app(env='development'):
     mail.init_app(app)
     login_manager.init_app(app)
     admin.init_app(app)
-    # migrate.init_app(app,db,render_as_batch=True)
-    migrate.init_app(app,db)
+    if db.engine.url.drivername == 'sqlite':
+        migrate.init_app(app, db, render_as_batch=True)
+    else:
+    	migrate.init_app(app,db)
     db.init_app(app)
     bootstrap.init_app(app)
     from .api import api
