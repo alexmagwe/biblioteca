@@ -27,18 +27,18 @@ login_manager.login_view='auth.login'
 login_manager.login_message_category='info'
 migrate=Migrate()
 
-def create_app(env='development'):
+def create_app(env='production'):
     app=Flask(__name__)
     app.config.from_object(configs[env])
     mail.init_app(app)
     login_manager.init_app(app)
     admin.init_app(app)
     db.init_app(app)
-    with app.app_context():
-        if db.engine.url.drivername == 'sqlite':
-            migrate.init_app(app, db, render_as_batch=True)
-        else:
-            migrate.init_app(app,db)
+    # with app.app_context():
+    #     if db.engine.url.drivername == 'sqlite':
+    #         migrate.init_app(app, db, render_as_batch=True)
+    #     else:
+    migrate.init_app(app,db)
     bootstrap.init_app(app)
     from .api import api
     app.register_blueprint(api) 

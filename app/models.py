@@ -18,6 +18,7 @@ class Users(db.Model,UserMixin):
     email=db.Column(db.String(30),unique=True,nullable=False)
     permissions=db.Column(db.Integer,default=Permissions.MYNOTES)
     password=db.Column(db.String(100))
+    year=db.Column(db.Integer)
     course_id=db.Column(db.Integer,db.ForeignKey('courses.id'))
     #year
     def __init__(self,*args,**kwargs):
