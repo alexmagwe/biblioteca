@@ -143,10 +143,11 @@ class Upload(Resource):
     def post(self):
        
         files=request.files.getlist('notes')
-        print(files)
         code=request.headers.get('unit_code') or request.form.get('unit_code')
-        unit_id=find_unit(code).id
-        print(unit_id)
+        unit_id=find_unit(code)
+        if not unit_id:
+            return {'error':'unit not found'}
+        
         
         if files:
             creds=FileUploader.getcreds()
