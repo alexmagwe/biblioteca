@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_login import UserMixin,AnonymousUserMixin,current_user
 from flask import current_app,redirect,url_for
 from passlib.hash import sha256_crypt
-import os
+import os,sys
 
 class Permissions:
     ADMIN=16
@@ -69,9 +69,9 @@ class AdminsList(db.Model):
         db.session.add(self)
         try:
             db.session.commit()
-            return {'success':'admin addded succesfully'}
+            return True
         except Exception as e:
-            return {'error':e}
+            return False
         
     
 class Courses(db.Model):
@@ -87,13 +87,23 @@ class Courses(db.Model):
 class Units(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True,nullable=False)
-    acronym=db.Column(db.String(10),unique=True,index=True)
+    code=db.Column(db.String(10),unique=True,index=True)
     notes=db.relationship('Notes',backref='unit',lazy=True)
     semester=db.Column(db.String(10),index=True)
     year=db.Column(db.Integer,index=True)
     courses_id=db.Column(db.Integer,db.ForeignKey('courses.id'))
     def __repr__(self):
-        return f'unit:{self.acronym},year:{self.year},semester:{self.semester},no of notes:{len(self.notes)}'
+        return f'unit:{self.code},year:{self.year},semester:{self.semester},no of notes:{len(self.notes)}'
+    def add(self):
+        db.session.add(self)
+        try:
+            db.session.commit()
+            return True
+        except:
+            db.session.rollback()
+            return False
+            
+        
    
 
 class Notes(db.Model):

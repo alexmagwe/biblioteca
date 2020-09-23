@@ -57,7 +57,10 @@ def add_admin():
     if form.validate_on_submit():
         admin=AdminsList(email=form.email.data)
         res=admin.add()
-        flash(res,'success')
+        if res:
+            flash('admin addded succesfully','success')
+        else:
+            flash('error occured','danger')
     return render_template('auth/add_admin.html',form=form)
 @login_required
 @auth.route('/logout')

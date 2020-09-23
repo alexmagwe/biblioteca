@@ -17,11 +17,11 @@ def find_course(name):
     return course
 
 def find_unit(code):
-        unit=Units.query.filter_by(acronym=code).first()
+        unit=Units.query.filter_by(code=code).first()
         if unit:
             return (unit)
         else:
-            return (None)     
+            return (None)   
         
 def find_file(name):
     exists=Notes.query.filter_by(name=name).first()
@@ -52,7 +52,7 @@ def get_notes(course_name):
         units=course.units
         for unit in units:
             for n in unit.notes:
-                notes.append({'unit':unit.acronym,'name':n.name,'gid':n.gid})
+                notes.append({'unit':unit.code,'name':n.name,'gid':n.gid})
         if len(notes)>0:
             return notes
     else:
@@ -64,12 +64,13 @@ parser=reqparse.RequestParser()
 parser.add_argument('course_name',type=str,help='course name required')
 
 unitparser=reqparse.RequestParser()
-unitparser.add_argument('unit',type=str,help='unit acronym required')
+unitparser.add_argument('unit',type=str,help='unit code required')
 
 acmodel=myapi.model('AddCourse',{'course_name':fields.String()})
 cdmodel=myapi.model('CourseDetails',{'email':fields.String()})
 amcmodel=myapi.model('AddMyCourse',{'email':fields.String(),'course_name':fields.String()})
 cnmodel=myapi.model('CourseNotes',{'course_name':fields.String()})
+aumodel=myapi.model('AddUnit',{'course_name':fields.String(),'name':fields.String(),'semester':fields.String(),'unit_code':fields.String(),'year':fields.Integer()})
 unmodel=myapi.model('UnitNotes',{'unit_code':fields.String()})
 # uploadmodel=myapi.model('Upload',{'headers':'unit'})
 
@@ -86,7 +87,7 @@ class UnitNotes(Resource):
             else:
                 return {'error':'unit not found'}
         else:
-            return {'error':"invalid information recieved,expected json obj unit:unit acronym"}
+            return {'error':"invalid information recieved,expected json obj unit:unit code"}
             
     
 class CourseNotes(Resource):
@@ -128,9 +129,9 @@ class AddCourse(Resource):
 #     def post(self):
 #         if 'files' not in request.files:
 #             return jsonify({'error':' no file was chosen'})
-#         acronym=request.form.get('unit_code')
+#         code=request.form.get('unit_code')
 #         for file in request.files.getlist('files'):
-#             res=savefile(file,acronym)
+#             res=savefile(file,code)
 #             if not res:
 #                 return jsonify({'error':'unit not available'})
 #             elif (error:=res.get('error')):
@@ -142,10 +143,11 @@ class Upload(Resource):
     def post(self):
        
         files=request.files.getlist('notes')
-        print(files)
         code=request.headers.get('unit_code') or request.form.get('unit_code')
-        unit_id=find_unit(code).id
-        print(unit_id)
+        unit_id=find_unit(code)
+        if not unit_id:
+            return {'error':'unit not found'}
+        
         
         if files:
             creds=FileUploader.getcreds()
@@ -242,7 +244,7 @@ class AllCourses(Resource):
 class AllUnits(Resource):
     def get(self):
         units=Units.query.all()
-        data=[{'code':unit.acronym,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in units]
+        data=[{'code':unit.code,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in units]
         return data
 class AllNotes(Resource):
     def get(self):
@@ -256,13 +258,35 @@ class GetUnits(Resource):
         if (name:=data.get('course_name')):
             course=find_course(name)
             if course:
-                return [{'acronym':unit.acronym,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in course.units]
+                return [{'code':unit.code,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in course.units]
             else:
                 return {'error':'course unavailable'}
         else:
             return {'error':'course name not provided'}
             
-        
+class AddUnit(Resource):
+    @myapi.expect(aumodel)
+    def post(self):
+        data=request.json
+        if data.get('course_name') and data.get('name') and data.get('unit_code') and data.get('semester') and data.get('year'):
+            unit=find_unit(data.get('unit_code'))
+            course=find_course(name)
+            if unit:
+                return 
+            elif not unit and course:
+                u=Units(name=data.get('name'),code=data.get('unit_code'),semester=data.get('semester'),year=data.get(year),course_id=course.id)
+                res=u.add()
+                if res:
+                    return {'message':'added sucessfully'}
+                else:
+                    return {'error':'try again later'}
+            elif not unit and not course:
+                return {'error':f"{data.get('course_name')} not found"}
+            else:
+                return
+        else:
+            return {'error':'missing information'}
+            
 
 
 
