@@ -78,6 +78,7 @@ class Courses(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True)
     units=db.relationship('Units',backref='courses')
+    code=db.Column(db.String(10),unique=True,index=True)
     users=db.relationship('Users',backref='course',lazy=True)#to allow pagination set lazy='dynamic'
 
     def __repr__(self):
