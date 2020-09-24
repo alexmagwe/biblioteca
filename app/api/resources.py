@@ -144,8 +144,8 @@ class Upload(Resource):
        
         files=request.files.getlist('notes')
         code=request.headers.get('unit_code') or request.form.get('unit_code')
-        unit_id=find_unit(code)
-        if not unit_id:
+        unit=find_unit(code)
+        if not unit:
             return {'error':'unit not found'}
         
         
@@ -161,15 +161,13 @@ class Upload(Resource):
                     if exists:
                         continue
                     obj.driveupload(creds)
-                    print(obj.id)
-                    obj.delete_file()
-                    if unit_id and obj.id:
-                       note=Notes(name=obj.name,gid=obj.id,unit_id=unit_id)
+                    obj.delete_file()#add logging if file fail to delete
+                    if unit and obj.id:
+                       note=Notes(name=obj.name,gid=obj.id,unit_id=unit.id)
                        db.session.add(note)
                        try:
                            db.session.commit()
                        except Exception as e:
-                           print(e)
                            db.session.rollback()
                            return {'error':sys.exc_info()[0]}
                     else:

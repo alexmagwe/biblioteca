@@ -60,7 +60,6 @@ class FileUploader:
         if os.path.exists(file_path):
             try:
                 os.remove(file_path)
-                print('deleted succesfully')
             except Exception as e:
                 print(sys.exec_info()[0])
         else:
