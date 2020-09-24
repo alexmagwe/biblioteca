@@ -1,16 +1,8 @@
 from .app import db
-<<<<<<< HEAD
-from run import app
-from flask_migrate import Migrate,MigrateCommand
-from flask_script import Shell,Manager
-from .app.models import Users,Courses,Permissions,Units,Notes,AdminsList
-=======
 from .run import app
 from flask_migrate import Migrate,MigrateCommand
 from flask_script import Shell,Manager
 from .app.models import Users,Courses,Permissions,Units,Notes,AdminsList
-app=create_app('production')
->>>>>>> 09b5d0c7b759cca5a8c064ea71907e105683a7c6
 
 manager=Manager(app)
 @app.shell_context_processor

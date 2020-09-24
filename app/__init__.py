@@ -33,11 +33,6 @@ def create_app(env='production'):
     mail.init_app(app)
     login_manager.init_app(app)
     admin.init_app(app)
-<<<<<<< HEAD
-    migrate.init_app(app,db,render_as_batch=True)
-    # migrate.init_app(app,db)
-=======
->>>>>>> 09b5d0c7b759cca5a8c064ea71907e105683a7c6
     db.init_app(app)
     # with app.app_context():
     #     if db.engine.url.drivername == 'sqlite':
