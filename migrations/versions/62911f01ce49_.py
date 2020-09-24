@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: a0d498760444
+Revision ID: 62911f01ce49
 Revises: 
-Create Date: 2020-09-17 15:01:12.289842
+Create Date: 2020-09-24 02:41:22.746942
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a0d498760444'
+revision = '62911f01ce49'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,14 +28,16 @@ def upgrade():
     op.create_table('courses',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(length=100), nullable=True),
+    sa.Column('code', sa.String(length=10), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
     )
+    op.create_index(op.f('ix_courses_code'), 'courses', ['code'], unique=True)
     op.create_index(op.f('ix_courses_name'), 'courses', ['name'], unique=True)
     op.create_table('units',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
-    sa.Column('acronym', sa.String(length=10), nullable=True),
+    sa.Column('code', sa.String(length=10), nullable=True),
     sa.Column('semester', sa.String(length=10), nullable=True),
     sa.Column('year', sa.Integer(), nullable=True),
     sa.Column('courses_id', sa.Integer(), nullable=True),
@@ -43,7 +45,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('id')
     )
-    op.create_index(op.f('ix_units_acronym'), 'units', ['acronym'], unique=True)
+    op.create_index(op.f('ix_units_code'), 'units', ['code'], unique=True)
     op.create_index(op.f('ix_units_name'), 'units', ['name'], unique=True)
     op.create_index(op.f('ix_units_semester'), 'units', ['semester'], unique=False)
     op.create_index(op.f('ix_units_year'), 'units', ['year'], unique=False)
@@ -52,6 +54,7 @@ def upgrade():
     sa.Column('email', sa.String(length=30), nullable=False),
     sa.Column('permissions', sa.Integer(), nullable=True),
     sa.Column('password', sa.String(length=100), nullable=True),
+    sa.Column('year', sa.Integer(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['course_id'], ['courses.id'], ),
     sa.PrimaryKeyConstraint('id'),
@@ -81,9 +84,10 @@ def downgrade():
     op.drop_index(op.f('ix_units_year'), table_name='units')
     op.drop_index(op.f('ix_units_semester'), table_name='units')
     op.drop_index(op.f('ix_units_name'), table_name='units')
-    op.drop_index(op.f('ix_units_acronym'), table_name='units')
+    op.drop_index(op.f('ix_units_code'), table_name='units')
     op.drop_table('units')
     op.drop_index(op.f('ix_courses_name'), table_name='courses')
+    op.drop_index(op.f('ix_courses_code'), table_name='courses')
     op.drop_table('courses')
     op.drop_table('admins_list')
     # ### end Alembic commands ###

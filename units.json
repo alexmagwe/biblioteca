@@ -1,0 +1,182 @@
+[
+  {
+    "code": "SPH101",
+    "name": "MECHANICS I  \t",
+    "year": 1,
+    "semester": "1"
+  },
+  {
+    "code": "SPH105",
+    "name": "MATHEMATICS",
+    "year": 1,
+    "semester": "1"
+  },
+  {
+    "code": "SPH108",
+    "name": "INFORMATION SYSTEMS ANALYSIS AND DESIGN",
+    "year": 1,
+    "semester": "2"
+  },
+  {
+    "code": "SPH103",
+    "name": "WAVES AND OPTICS",
+    "year": 1,
+    "semester": "2"
+  },
+  {
+    "code": "SPH202",
+    "name": "ELECTRICITY AND MAGNETISM II",
+    "year": 2,
+    "semester": "2"
+  },
+  {
+    "code": "SPH102",
+    "name": "ELECTRICITY AND MAGNETISM I",
+    "year": 1,
+    "semester": "2"
+  },
+  {
+    "code": "CCS010",
+    "name": "HIV/AIDS",
+    "year": 1,
+    "semester": "2"
+  },
+  {
+    "code": "SPH113",
+    "name": "DATA STRUCTURES AND ALGORITHMS",
+    "year": 1,
+    "semester": "2"
+  },
+  {
+    "code": "SPH110",
+    "name": "COMMUNICATION SKILLS",
+    "year": 1,
+    "semester": "2"
+  },
+  {
+    "code": "SPH107",
+    "name": "COMPUTER PROGRAMMING I  \t",
+    "year": 1,
+    "semester": "1"
+  },
+  {
+    "code": "SPH109",
+    "name": "OPERATING SYSTEMS",
+    "year": 1,
+    "semester": "1"
+  },
+  {
+    "code": "SPH111",
+    "name": "ENTREPRENEURSHIP",
+    "year": 1,
+    "semester": "1"
+  },
+  {
+    "code": "SPH114",
+    "name": "COMPUTING LABORATORY I",
+    "year": 1,
+    "semester": "1"
+  },
+  {
+    "code": "SPH201",
+    "name": "MECHANICS II",
+    "year": 2,
+    "semester": "1"
+  },
+  {
+    "code": "SPH204",
+    "name": "MATHEMATICAL PHYSICS I",
+    "year": 2,
+    "semester": "1"
+  },
+  {
+    "code": "SPH205",
+    "name": "INSTRUMENTATION ELECTRONICS \t",
+    "year": 2,
+    "semester": "1"
+  },
+  {
+    "code": "SPH207",
+    "name": "DATA COMMUNICATIONS",
+    "year": 2,
+    "semester": "1"
+  },
+  {
+    "code": "SPH208",
+    "name": "DIGITAL ELECTRONICS",
+    "year": 2,
+    "semester": "2"
+  },
+  {
+    "code": "SPH209",
+    "name": "TRANSDUCERS",
+    "year": 2,
+    "semester": "1"
+  },
+  {
+    "code": "SPH210",
+    "name": "INTRODUCTION TO OBJECT ORIENTED PROGRAMMING",
+    "year": 2,
+    "semester": "2"
+  },
+  {
+    "code": "SPH211",
+    "name": "INDUSTRIAL ORGANIZATION AND MANAGEMENT",
+    "year": 2,
+    "semester": "2"
+  },
+  {
+    "code": "SPH213",
+    "name": "ELECTRONICS LABORATORY I",
+    "year": 2,
+    "semester": "1"
+  },
+  {
+    "code": "SPH214",
+    "name": "ELECTRONIC CONSTRUCTION AND WORKSHOP PRACTICE TECHNIQUES",
+    "year": 2,
+    "semester": "1"
+  },
+  {
+    "code": "SPH303",
+    "name": "Solid State Physics I",
+    "year": 3,
+    "semester": "2"
+  },
+  {
+    "code": "SPH306",
+    "name": " Mathematical Physics II",
+    "year": 3,
+    "semester": "1"
+  },
+  {
+    "code": "SPH316",
+    "name": "Advanced Electronics",
+    "year": 3,
+    "semester": "2"
+  },
+  {
+    "code": "SPH337",
+    "name": "Signals and Systems",
+    "year": 3,
+    "semester": "1"
+  },
+  {
+    "code": "SPH301",
+    "name": "Practical Physics I",
+    "year": 3,
+    "semester": "1"
+  },
+  {
+    "code": "SPH302",
+    "name": "Thermodynamics",
+    "year": 3,
+    "semester": "2"
+  },
+  {
+    "code": "SPH304",
+    "name": "Electrodynamics I",
+    "year": 3,
+    "semester": "2"
+  }
+]

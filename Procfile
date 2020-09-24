@@ -1,2 +1,3 @@
 web: gunicorn run:app
-upgrade: python manage.py db upgrade
+upgrade: flask db upgrade
+migrate: flask db migrate

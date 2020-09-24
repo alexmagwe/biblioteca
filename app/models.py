@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_login import UserMixin,AnonymousUserMixin,current_user
 from flask import current_app,redirect,url_for
 from passlib.hash import sha256_crypt
-import os,sys
+import os,sys,json
 
 class Permissions:
     ADMIN=16
@@ -18,6 +18,7 @@ class Users(db.Model,UserMixin):
     email=db.Column(db.String(30),unique=True,nullable=False)
     permissions=db.Column(db.Integer,default=Permissions.MYNOTES)
     password=db.Column(db.String(100))
+    year=db.Column(db.Integer)
     course_id=db.Column(db.Integer,db.ForeignKey('courses.id'))
     #year
     def __init__(self,*args,**kwargs):
@@ -78,6 +79,7 @@ class Courses(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True)
     units=db.relationship('Units',backref='courses')
+    code=db.Column(db.String(10),unique=True,index=True)
     users=db.relationship('Users',backref='course',lazy=True)#to allow pagination set lazy='dynamic'
 
     def __repr__(self):
@@ -102,10 +104,19 @@ class Units(db.Model):
         except:
             db.session.rollback()
             return False
-            
-        
-   
-
+    @staticmethod
+    def generate():
+        id=Courses.query.first().id
+        with open(os.path.abspath('units.json')) as f:
+            data=json.load(f)
+            for unit in data:
+                u=Units(name=unit['name'],code=unit['code'],year=unit['year'],semester=unit['semester'],courses_id=id)
+                db.session.add(u)
+            try:
+                db.session.commit()
+                print('success')
+            except:
+                db.session.rollback()
 class Notes(db.Model):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True)
@@ -113,7 +124,7 @@ class Notes(db.Model):
     gid=db.Column(db.String(),unique=True,index=True)
 
     def __repr__(self):
-       return f'notes:{self.name},unit-name:[{self.unit.name}]'
+       return f'notes:{self.name}'
   
     
         
