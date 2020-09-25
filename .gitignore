@@ -13,3 +13,4 @@ token.pickle
 notes.code-workspace
 google-credentials.json
 *.sqlite
+.env
