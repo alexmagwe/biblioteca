@@ -12,8 +12,8 @@ from ..models import Courses,Units,Users,Notes
 def find_user(em):
     user=Users.query.filter_by(email=em).first()
     return user
-def find_course(name):
-    course=Courses.query.filter_by(name=name).first()
+def find_course(code):
+    course=Courses.query.filter_by(code=code).first()
     return course
 
 def find_unit(code):
@@ -45,11 +45,11 @@ def savefile(file,code='',toupload=False):
             return {'error':sys.exc_info()[0]}
     return None
             #create_new_path(unit)
-def get_notes(course_name):
-    course=find_course(course_name)
+def get_notes(course_code):
+    course=find_course(course_code)
     notes=[]
     if course:
-        units=course.units
+        units=course.units#change in model t olazy dynamic so i can query by year or semester
         for unit in units:
             for n in unit.notes:
                 notes.append({'unit':unit.code,'name':n.name,'gid':n.gid})
@@ -61,16 +61,16 @@ def get_notes(course_name):
 
 
 parser=reqparse.RequestParser()
-parser.add_argument('course_name',type=str,help='course name required')
+parser.add_argument('course_code',type=str,help='course name required')
 
 unitparser=reqparse.RequestParser()
 unitparser.add_argument('unit',type=str,help='unit code required')
 
-acmodel=myapi.model('AddCourse',{'course_name':fields.String()})
+acmodel=myapi.model('AddCourse',{'course_name':fields.String(),'course_code':fields.String()})
 cdmodel=myapi.model('CourseDetails',{'email':fields.String()})
-amcmodel=myapi.model('AddMyCourse',{'email':fields.String(),'course_name':fields.String()})
-cnmodel=myapi.model('CourseNotes',{'course_name':fields.String()})
-aumodel=myapi.model('AddUnit',{'course_name':fields.String(),'name':fields.String(),'semester':fields.String(),'unit_code':fields.String(),'year':fields.Integer()})
+amcmodel=myapi.model('AddMyCourse',{'email':fields.String(),'course_code':fields.String()})
+cnmodel=myapi.model('CourseNotes',{'course_code':fields.String()})
+aumodel=myapi.model('AddUnit',{'course_code':fields.String(),'name':fields.String(),'semester':fields.String(),'unit_code':fields.String(),'year':fields.Integer()})
 unmodel=myapi.model('UnitNotes',{'unit_code':fields.String()})
 # uploadmodel=myapi.model('Upload',{'headers':'unit'})
 
@@ -95,10 +95,10 @@ class CourseNotes(Resource):
     @myapi.doc(body=cnmodel)
     def post(self):
         data=parser.parse_args()
-        data=data.get('course_name')
+        data=data.get('course_code')
         if data:
-            course_name=data
-            notes=get_notes(course_name)
+            course_code=data
+            notes=get_notes(course_code)
             if notes:
                 return notes
             else:
@@ -110,33 +110,22 @@ class AddCourse(Resource):
     @myapi.expect(acmodel)
     def post(self):
         data=request.json
-        if (course_name:=data.get('course_name')):
-            course=find_course(course_name)
+        course_code=data.get('course_code')
+        course_name=data.get('course_name')
+        if course_name and course_code:
+            course=find_course(course_code)
             if course:
                 return {'message':'course already exists'}
             else:
-                c=Courses(name='course_name')
-                db.session.add(c)
-                try:
-                    db.session.commit()
-                    return {'success':'course updated' }
-                except:
-                    db.session.rollback()
+                c=Courses(name=course_name,code=course_code)
+                res=c.add()
+                if res:
+                    return {'success':'course added' }
+                else:
+                    return {'error':'could not create course,try again later'}
         else:
             return {'error':'invalid course information in request expected json obj {course name:string}'}
-
-# class Uploadlocal(Resource):
-#     def post(self):
-#         if 'files' not in request.files:
-#             return jsonify({'error':' no file was chosen'})
-#         code=request.form.get('unit_code')
-#         for file in request.files.getlist('files'):
-#             res=savefile(file,code)
-#             if not res:
-#                 return jsonify({'error':'unit not available'})
-#             elif (error:=res.get('error')):
-#                 return error    
-#         return jsonify({'success':'request complete'})  
+ 
      
 class Upload(Resource):
     
@@ -181,19 +170,13 @@ class AddMyCourse(Resource):
     @myapi.expect(amcmodel)
     def post(self):
         data=request.json 
-        if data.get('email') and data.get('course_name'):
+        if data.get('email') and data.get('course_code'):
             email=data['email']
-            if 'user' in session:
-                user=session.get('user')
-            else:
-                user=find_user(email)
-
-            course_name=data.get('course_name')
-            if user:
-                email=user.email
-            else: 
+            user=find_user(email)
+            course_code=data.get('course_code')
+            if not user:
                 return {'error':'user not found'}
-            course=find_course(course_name)
+            course=find_course(course_code)
             
             if user and course and not user.course:
                 user.course_id=course.id
@@ -201,11 +184,11 @@ class AddMyCourse(Resource):
                     db.session.commit()
                 except:
                     db.session.rollback()
-                return {'course_name':user.course.name}         
+                return {'name':user.course.name,'code':course.code}         
             elif user.course:
-                return {'course_name':user.course.name}
+                return {'name':user.course.name,'code':user.course.code}
         else:
-            return {'error':'missing information'}
+            return {'error':'missing email or course code'}
         
 # get details of the student course,you supply the email
 class CourseDetails(Resource):
@@ -216,14 +199,11 @@ class CourseDetails(Resource):
             user=find_user(em)
             if user and (course:=user.course):
                 # session['user']=user
-                return {'course':course.name}
+                return {'name':course.name,'code':course.code}
             elif not user:
                 user=Users(email=em)
-                db.session.add(user)
-                try:
-                    db.session.commit()
-                except:
-                    db.session.rollback()
+                res=user.add()
+                if not res:
                     return {'error':'user could not be created'}
                 # session['user']=user
                 return {'course_name':None}
@@ -236,8 +216,8 @@ class CourseDetails(Resource):
 class AllCourses(Resource):
     def get(self):
         courses=Courses.query.all()
-        data=[course.name for course in courses]
-        return {"courses":data}
+        data=[{'name':course.name,'code':course.code} for course in courses]
+        return data
     
 class AllUnits(Resource):
     def get(self):
@@ -253,10 +233,10 @@ class GetUnits(Resource):
     @myapi.expect(cnmodel)
     def post(self):
         data=request.json
-        if (name:=data.get('course_name')):
-            course=find_course(name)
+        if (code:=data.get('course_code')):
+            course=find_course(code)
             if course:
-                return [{'code':unit.code,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in course.units]
+                return [{'code':unit.code,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in course.units.query.all()]
             else:
                 return {'error':'course unavailable'}
         else:
@@ -266,9 +246,9 @@ class AddUnit(Resource):
     @myapi.expect(aumodel)
     def post(self):
         data=request.json
-        if data.get('course_name') and data.get('name') and data.get('unit_code') and data.get('semester') and data.get('year'):
+        if data.get('course_code') and data.get('name') and data.get('unit_code') and data.get('semester') and data.get('year'):
             unit=find_unit(data.get('unit_code'))
-            course=find_course(name)
+            course=find_course(data.get('code'))
             if unit:
                 return 
             elif not unit and course:

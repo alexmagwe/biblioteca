@@ -46,7 +46,7 @@ def callback():
         a=AdminsList(email=user_data['email'])
         a.add()
         u=Users(email=user_data['email'])
-        res=u.register()
+        res=u.add()
         if res:
             n=Users.query.filter_by(email=user_data['email']).first()
             login_user(n)

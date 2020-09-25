@@ -1,8 +1,8 @@
 {%extends 'layout.html'%} {% block content %}
 
 <form id='coursenotes'>
-    <label for='name'><h3>Enter course name</h3></label>
-    <input id='name' type='text' name='course_name'>
+    <label for='name'><h3>Enter course code</h3></label>
+    <input id='name' type='text' name='course_code'>
     <button type="submit">search</button>
 </form>
 <ul id='notes-list'>
@@ -13,26 +13,15 @@
         let form = document.querySelector('#coursenotes');
         form.addEventListener('submit', e => {
             e.preventDefault();
-            const name = form.elements['course_name'].value;
-            console.log(name)
+            const code = form.elements['course_code'].value;
 
-            /*let payload = JSON.stringify({
-                    'course_name': name
-                })
-                let data = {
-                    
-                    headers: {
-                        "Content-Type": 'application/json;charset=utf=8'
-                    },
-                    body: JSON.stringify(payload)
-                }*/
 
-            fetch('/course_notes',{
+            fetch('/course/notes',{
                 method:'POST',
                 headers:{
                 'Content-Type':'application/json',
                 },
-                body:JSON.stringify({'course_name':name})
+                body:JSON.stringify({'course_code':code})
                     }
                 )
                 .then(resp => resp.json())

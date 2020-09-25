@@ -13,7 +13,16 @@ class Permissions:
 @login_manager.user_loader
 def load_user(id):
     return Users.query.get(int(id))
-class Users(db.Model,UserMixin):
+class Utilities:
+    def add(self):
+        db.session.add(self)
+        try:
+            db.session.commit()
+            return True
+        except Exception as e:
+            return False
+        
+class Users(db.Model,UserMixin,Utilities):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     email=db.Column(db.String(30),unique=True,nullable=False)
     permissions=db.Column(db.Integer,default=Permissions.MYNOTES)
@@ -27,15 +36,7 @@ class Users(db.Model,UserMixin):
             admin=AdminsList.query.filter_by(email=self.email).first()
             if admin:
                 self.permissions=Permissions.ADMIN+Permissions.ADDNOTES+Permissions.MYNOTES
-    
-    def register(self):
-        db.session.add(self)
-        try:
-            db.session.commit()
-            return True
-        except Exception as e:
-            db.session.rollback()
-            return False
+ 
                 
     def can(self,perm):
         return self.permissions is not None and self.has_permission(perm)
@@ -61,32 +62,25 @@ class AnonymousUser(AnonymousUserMixin):
     def is_admin(self):
         return False
 login_manager.anonymous_user=AnonymousUser
-class AdminsList(db.Model):
+class AdminsList(db.Model,Utilities):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     email=db.Column(db.String(100),unique=True,nullable=False)
     def __repr__(self):
         return f"{self.email}"
-    def add(self):
-        db.session.add(self)
-        try:
-            db.session.commit()
-            return True
-        except Exception as e:
-            return False
+
         
     
-class Courses(db.Model):
+class Courses(db.Model,Utilities):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True)
-    units=db.relationship('Units',backref='courses')
+    units=db.relationship('Units',backref='courses',lazy='dynamic')
     code=db.Column(db.String(10),unique=True,index=True)
     users=db.relationship('Users',backref='course',lazy=True)#to allow pagination and also to return a query obj set lazy='dynamic'
 
     def __repr__(self):
         return f'course:{self.name},no of units:{len(self.units)} no of students:{len(self.users )}'
-    
-
-class Units(db.Model):
+ 
+class Units(db.Model,Utilities):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True,nullable=False)
     code=db.Column(db.String(10),unique=True,index=True)
@@ -117,7 +111,7 @@ class Units(db.Model):
                 print('success')
             except:
                 db.session.rollback()
-class Notes(db.Model):
+class Notes(db.Model,Utilities):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
     name=db.Column(db.String(100),unique=True,index=True)
     unit_id=db.Column(db.Integer,db.ForeignKey('units.id'),nullable=False)
@@ -142,9 +136,6 @@ class AdminView(ModelView):
             return redirect(url_for('api.home'))
 
 
-# admin.add_view(AdminView(Users,db.session))
-# admin.add_view(AdminView(Courses,db.session))
-# admin.add_view(AdminView(Units,db.session))
 admin.add_view(AdminView(AdminsList,db.session))
 admin.add_view(AdminView(Courses,db.session))
 admin.add_view(AdminView(Users,db.session))
