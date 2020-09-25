@@ -30,13 +30,14 @@
                 </button> 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-                    <li class='nav-item'><a class='nav-link' href="/docs" id='docs'>Try</a></li>
+                    <li class='nav-item'><a class='nav-link' href="/try" id='docs'>Try</a></li>
                     {%if current_user.is_anonymous%}
                     <li class='nav-item'><a class='nav-link' href="{{url_for('auth.login')}}" id='login'>Login</a></li>
                     {%else%}
                      {%if current_user.is_admin%}
                     <li class='nav-item'><a class='nav-link' href="/admin" id='login'>Dashboard</a></li>
                     {%endif%}
+                    <li class='nav-item'><a class='nav-link' href="{{url_for('api.docs')}}" id='docs'>Docs</a></li>
                     <li class='nav-item'><a class='nav-link' href="{{url_for('auth.logout')}}">Logout</a> </li>
         
                     {%endif%}

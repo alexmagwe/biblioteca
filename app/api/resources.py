@@ -236,7 +236,11 @@ class GetUnits(Resource):
         if (code:=data.get('course_code')):
             course=find_course(code)
             if course:
-                return [{'code':unit.code,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in course.units.query.all()]
+                if (year:=data.get('year')):
+                    return [{'code':unit.code,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in course.units.filter_by(year=year).all()]
+                else:
+                    return [{'code':unit.code,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in course.units]
+                    
             else:
                 return {'error':'course unavailable'}
         else:

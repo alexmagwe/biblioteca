@@ -4,6 +4,7 @@
    
             <div class="docs-side-bar">
                 <a href="#section-1" class="sidebar-link">Authentication</a>
+                <a href="#units" class="sidebar-sub-link">Units</a>
                 <a href="#upload-section" class="sidebar-link">Upload</a>
                 <a href="#upload-single" class="sidebar-sub-link">Single Upload</a>
                 <a href="#upload-multiple" class="sidebar-sub-link">Multiple upload</a>
@@ -15,6 +16,21 @@
                         All requests must be done over https 
                 </p>
                 
+                </div>
+                <div id="units">
+                    <h2>Units</h2>
+                    <p>
+                        To get units of a course send a POST request to <i class='text-primary'>/course/units</i>
+                        <br>
+                        Request payload should be a json object containing course code and optionally an year. <br>
+                        If year is not present ,all units for the specified course shall be returned <br>
+                       <b> payload:</b> <br> <br>
+                       <code>
+                           &nbsp;&nbsp;{'course_code':"string",<br>
+                        &nbsp;&nbsp;"year"=int betweeen 1 and 4 <br>
+                     &nbsp;}
+                       </code>
+                    </p>
                 </div>
                 <div id='upload-section' class="section">
                 <h2>Upload</h2>

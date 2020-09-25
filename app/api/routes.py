@@ -9,7 +9,7 @@ def home():
     if current_user.is_authenticated:
         return render_template('landing.html')
     else:
-        return render_template('documentation.html')
+        return render_template('home.html')
 
                            
 @api.route('/new_course',methods=['GET'])
@@ -26,6 +26,6 @@ def find_notes():
 def upload_notes():
     return render_template('upload.html')
 
-@api.route('/upload_docs',methods=['GET'])
-def upload_docs():
-    return render_template('doc.html')
+@api.route('/docs',methods=['GET'])
+def docs():
+    return render_template('/docs/doc.html')
