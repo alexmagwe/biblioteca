@@ -78,7 +78,7 @@ class Courses(db.Model,Utilities):
     users=db.relationship('Users',backref='course',lazy=True)#to allow pagination and also to return a query obj set lazy='dynamic'
 
     def __repr__(self):
-        return f'course:{self.name},no of units:{len(self.units)} no of students:{len(self.users )}'
+        return f'course:{self.name},no of units:{len(self.units.all())} no of students:{len(self.users )}'
  
 class Units(db.Model,Utilities):
     id=db.Column(db.Integer,unique=True,primary_key=True,autoincrement=True)
