@@ -64,7 +64,7 @@ parser=reqparse.RequestParser()
 parser.add_argument('course_code',type=str,help='course name required')
 
 unitparser=reqparse.RequestParser()
-unitparser.add_argument('unit',type=str,help='unit code required')
+unitparser.add_argument('unit_code',type=str,help='unit code required')
 
 acmodel=myapi.model('AddCourse',{'course_name':fields.String(),'course_code':fields.String()})
 cdmodel=myapi.model('CourseDetails',{'email':fields.String()})
@@ -83,7 +83,7 @@ class UnitNotes(Resource):
         if(code:=data.get('unit_code')):
             unit=find_unit(code)
             if unit:
-                return {'notes':[note.name for note in unit.notes]}
+                return [note.name for note in unit.notes]
             else:
                 return {'error':'unit not found'}
         else:
