@@ -79,11 +79,10 @@ class UnitNotes(Resource):
     @myapi.doc(body=unmodel)
     def post(self):
         data=unitparser.parse_args()
-        print(data)
         if(code:=data.get('unit_code')):
             unit=find_unit(code)
             if unit:
-                return [{"id":note.id,"name":note.name,"gid":note.gid,"unit":{"name":unit.name,"code":unit.code}} for note in unit.notes]
+                return {"unit":unit.name,"code":unit.code,'notes':[{"id":note.id,"name":note.name,"gid":note.gid} for note in unit.notes]}
             else:
                 return {'error':'unit not found'}
         else:
