@@ -83,7 +83,7 @@ class UnitNotes(Resource):
         if(code:=data.get('unit_code')):
             unit=find_unit(code)
             if unit:
-                return [{note.id,note.name,note.gid} for note in unit.notes]
+                return jsonify[{"id":note.id,"name"note.name,"gid":note.gid} for note in unit.notes]
             else:
                 return {'error':'unit not found'}
         else:
