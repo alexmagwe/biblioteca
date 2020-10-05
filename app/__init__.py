@@ -38,7 +38,7 @@ def create_app(env='production'):
     db.init_app(app)
     bootstrap.init_app(app)
     from .api import api
-    app.register_blueprint(api) 
+    app.register_blueprint(api,url_prefix="/api") 
     from .auth import auth
     app.register_blueprint(auth,url_prefix='/auth')
     return app
