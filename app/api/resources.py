@@ -111,6 +111,7 @@ class AddCourse(Resource):
     @myapi.expect(acmodel)
     def post(self):
         data=request.json
+        print('data recieved',data)
         course_code=data.get('course_code')
         course_name=data.get('course_name')
         if course_name and course_code:
