@@ -72,7 +72,7 @@ amcmodel=myapi.model('AddMyCourse',{'email':fields.String(),'course_code':fields
 cnmodel=myapi.model('CourseNotes',{'course_code':fields.String()})
 aumodel=myapi.model('AddUnit',{'course_code':fields.String(),'name':fields.String(),'semester':fields.String(),'unit_code':fields.String(),'year':fields.Integer()})
 unmodel=myapi.model('UnitNotes',{'unit_code':fields.String()})
-# uploadmodel=myapi.model('Upload',{'headers':'unit'})
+existsmodel=myapi.model('Exists',{'name':fields.String()})
 
 class UnitNotes(Resource):
     @myapi.expect(unmodel)
@@ -244,7 +244,19 @@ class GetUnits(Resource):
                 return {'error':'course unavailable'}
         else:
             return {'error':'course name not provided'}
-            
+class Exists(Resource):
+    @myapi.expect(existsmodel)
+    def post(self):
+        data=request.json
+        print(data)
+        if (name:=data.get('name')):
+            res=find_file(name)
+            return res
+        else: 
+            return{'error':'name not in request'},400
+             
+             
+                        
 class AddUnit(Resource):
     @myapi.expect(aumodel)
     def post(self):

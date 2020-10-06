@@ -37,6 +37,8 @@ def create_app(env='production'):
     # migrate.init_app(app,db)
     db.init_app(app)
     bootstrap.init_app(app)
+    from .main import main
+    app.register_blueprint(main)
     from .api import api
     app.register_blueprint(api,url_prefix="/api") 
     from .auth import auth

@@ -1,5 +1,5 @@
 from . import myapi
-from .resources import AddUnit,AddCourse,AddMyCourse,CourseDetails,CourseNotes,AllCourses,AllNotes,Upload,AllUnits,GetUnits,UnitNotes
+from .resources import AddUnit,AddCourse,AddMyCourse,CourseDetails,CourseNotes,AllCourses,AllNotes,Upload,AllUnits,GetUnits,UnitNotes,Exists
 
 myapi.add_resource(AllCourses,'/courses/all')
 myapi.add_resource(CourseNotes,'/course/notes')
@@ -12,4 +12,5 @@ myapi.add_resource(AllNotes,'/notes/all')
 myapi.add_resource(UnitNotes,'/notes/all')
 myapi.add_resource(AllUnits,'/units/all')
 myapi.add_resource(AddUnit,'/add/units')
+myapi.add_resource(Exists,'/exists')
 
