@@ -6,7 +6,6 @@ from . import api,myapi
 import requests,sys
 from flask_restx import Resource,reqparse,fields
 import os,json
-from .upload import FileUploader
 from ..models import Courses,Units,Users,Notes
 
 def find_user(em):
@@ -66,13 +65,16 @@ parser.add_argument('course_code',type=str,help='course name required')
 unitparser=reqparse.RequestParser()
 unitparser.add_argument('unit_code',type=str,help='unit code required')
 
-acmodel=myapi.model('AddCourse',{'course_name':fields.String(),'course_code':fields.String()})
-cdmodel=myapi.model('CourseDetails',{'email':fields.String()})
-amcmodel=myapi.model('AddMyCourse',{'email':fields.String(),'course_code':fields.String()})
-cnmodel=myapi.model('CourseNotes',{'course_code':fields.String()})
-aumodel=myapi.model('AddUnit',{'course_code':fields.String(),'name':fields.String(),'semester':fields.String(),'unit_code':fields.String(),'year':fields.Integer()})
-unmodel=myapi.model('UnitNotes',{'unit_code':fields.String()})
-existsmodel=myapi.model('Exists',{'name':fields.String()})
+acmodel=myapi.model('AddCourse',{'course_name':fields.String,'course_code':fields.String})
+cdmodel=myapi.model('CourseDetails',{'email':fields.String})
+amcmodel=myapi.model('AddMyCourse',{'email':fields.String,'course_code':fields.String})
+cnmodel=myapi.model('CourseNotes',{'course_code':fields.String})
+aumodel=myapi.model('AddUnit',{'course_code':fields.String,'name':fields.String,'semester':fields.String,'unit_code':fields.String,'year':fields.Integer})
+unmodel=myapi.model('UnitNotes',{'unit_code':fields.String})
+existsmodel=myapi.model('Exists',{'name':fields.String})
+notefield=myapi.model('',{'name':fields.String,'gid':fields.String})
+uploadmodel=myapi.model('AddNotes',{'notes':fields.List(fields.Nested(notefield)),'unit_code':fields.String})
+
 
 class UnitNotes(Resource):
     @myapi.expect(unmodel)
@@ -126,43 +128,31 @@ class AddCourse(Resource):
             return {'error':'invalid course information in request expected json obj {course name:string}'}
  
      
-class Upload(Resource):
-    
+class AddNotes(Resource):
+    @myapi.expect(uploadmodel)
     def post(self):
-       
-        files=request.files.getlist('notes')
-        code=request.headers.get('unit_code') or request.form.get('unit_code')
-        unit=find_unit(code)
-        if not unit:
-            return {'error':'unit not found'}
-        
-        
-        if files:
-            creds=FileUploader.getcreds()
-            for file in files:
-                res=savefile(file,code,toupload=True)
-                if res.get('error'):
-                    return res,500
-                if (path:=res.get('path')):
-                    obj=FileUploader(path,file.filename,code)
-                    exists=find_file(obj.name)
-                    if exists:
+        data=request.json
+        notes=data.get('notes')
+        code=data.get('unit_code')
+        if code:
+            unit=find_unit(code)
+            if unit and len(notes)>0:
+                for note in notes:
+                    if find_file(note.get('name')):
                         continue
-                    obj.driveupload(creds)
-                    obj.delete_file()#add logging if file fail to delete
-                    if unit and obj.id:
-                       note=Notes(name=obj.name,gid=obj.id,unit_id=unit.id)
-                       db.session.add(note)
-                       try:
-                           db.session.commit()
-                       except Exception as e:
-                           db.session.rollback()
-                           return {'error':sys.exc_info()[0]}
-                    else:
-                        return {'error':'an error occured try again later'}
+                    file=Notes(name=note.get('name'),gid=note.get('gid'),unit_id=unit.id)
+                    db.session.add(file)
+                try:
+                    db.session.commit()
+                    # return {"success":"notes added succesfully"}
+                except Exception as e:
+                    print(e)
+                    return {'error':sys.exc_info()[0]},500
+            else:
+                return {'error':'invalid unit'},400
         else:
-            return {'error':'files no files present'}
-        return {'success':'file(s) uploaded succesfully'}
+            return {'error':'unit code not found'},400
+        return {'success':'notes added sucesfully'}
 
       
 class AddMyCourse(Resource):
@@ -188,6 +178,26 @@ class AddMyCourse(Resource):
                 return {'name':user.course.name,'code':user.course.code}
         else:
             return {'error':'missing email or course code'}
+    def put(self):
+        data=request.json 
+        if data.get('email') and data.get('course_code'):
+            email=data['email']
+            user=find_user(email)
+            course_code=data.get('course_code')
+            if not user:
+                user=Users(email=em)
+                res=user.add()
+            course=find_course(course_code)
+        
+            user.course_id=course.id
+            try:
+                db.session.commit()
+            except:
+                db.session.rollback()
+            return {'name':user.course.name,'code':course.code}         
+        else:
+            return {'error':'missing email or course code'}
+        
         
 # get details of the student course,you supply the email
 class CourseDetails(Resource):
@@ -203,11 +213,11 @@ class CourseDetails(Resource):
                 user=Users(email=em)
                 res=user.add()
                 if not res:
-                    return {'error':'user could not be created'}
+                    return {'error':'user could not be created'},500
                 # session['user']=user
-                return {'course_name':None}
+                return {'course_name':None},404
             else:
-                return {'course_name':None}
+                return {'course_name':None},404
                 
     #if the user course is not set or for some reason its not found empty string will be returned          
         else:
@@ -241,9 +251,9 @@ class GetUnits(Resource):
                     return [{'code':unit.code,'name':unit.name,'year':unit.year,'semester':unit.semester} for unit in course.units]
                     
             else:
-                return {'error':'course unavailable'}
+                return {'error':'course unavailable'},404
         else:
-            return {'error':'course name not provided'}
+            return {'error':'course name not provided'},400
 class Exists(Resource):
     @myapi.expect(existsmodel)
     def post(self):
@@ -272,13 +282,13 @@ class AddUnit(Resource):
                 if res:
                     return {'message':'added sucessfully'}
                 else:
-                    return {'error':'try again later'}
+                    return {'error':'try again later'},500
             elif not unit and not course:
-                return {'error':f"{data.get('course_name')} not found"}
+                return {'error':f"{data.get('course_name')} not found"},400
             else:
                 return
         else:
-            return {'error':'missing information'}
+            return {'error':'missing information'},400
             
 
 

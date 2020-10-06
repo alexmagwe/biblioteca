@@ -21,11 +21,6 @@ def new_course():
 def find_notes():
     return render_template('notes.html')
     
-
-@api.route('/upload_notes',methods=['GET'])
-def upload_notes():
-    return render_template('upload.html')
-
 @api.route('/docs',methods=['GET'])
 def docs():
     return render_template('/docs/doc.html')
