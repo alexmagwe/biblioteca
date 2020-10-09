@@ -112,7 +112,7 @@ class Notes(db.Model,Utilities):
 
     def __repr__(self):
        return f'notes:{self.name}'
-  
+    
     
         
         

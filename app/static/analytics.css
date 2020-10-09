@@ -1,0 +1,76 @@
+:root{
+    --card1:
+    --card2:
+    --card3
+    --card4:
+}
+.card-container{
+    display:flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin:1em 0;
+    flex-wrap: wrap;
+
+}
+.vague{
+    color:rgb(53, 51, 51);
+}
+.vague-darker{
+    color:rgb(7, 7, 7);
+}
+.analytics-container{
+    padding-top:1em;
+}
+.analytics-card{
+    width:150px;
+    height:150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius:50%;
+    padding:10px;
+    margin: 10px;
+    color:#fff;
+    font-weight: 600;
+}
+.analytics-users{
+    background:linear-gradient(45deg,#321fdb 0%,#1f1498 100%);
+
+}
+.analytics-courses{
+    background:linear-gradient(45deg,#39f 0%,#2982cc 100%);
+
+}
+.analytics-units{
+    background:linear-gradient(45deg,#f9b115 0%,#f6960b 100%);
+}
+.analytics-notes{
+    background:linear-gradient(45deg,#e55353 0%,#d93737 100%);
+
+}
+/* .all-units-container{
+} */
+.units-list{
+    background-color: #eeeeee;
+     max-height:65vh;
+   
+    overflow:auto;
+}
+.units-list-item{
+    display:block;
+    display: flex;
+    font-size:16px;
+    padding:5px;
+    border-bottom:1px solid silver;
+    justify-content:flex-start;
+    margin:10px;
+}
+.units-list-items-count{
+    margin-left:auto;
+    border-radius: 50%;
+    padding:5px;
+    background-color: rgb(16, 253, 16);
+    color:rgb(0, 0, 0);
+    font-weight:900;
+    
+}
