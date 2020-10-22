@@ -128,9 +128,31 @@ class AdminView(ModelView):
         if not self.is_accessible():
             return redirect(url_for('api.home'))
 
-
+class NotesView(ModelView):
+    column_searchable_list=(Notes.name,Notes.unit_id)
+    def is_accessible(self):
+        return current_user.is_admin
+    def inaccessible_callback(self, name, **kwargs):
+        if not self.is_accessible():
+            return redirect(url_for('api.home'))
+class CoursesView(ModelView):
+    column_searchable_list=(Courses.name,Courses.code)
+    def is_accessible(self):
+        return current_user.is_admin
+    def inaccessible_callback(self, name, **kwargs):
+        if not self.is_accessible():
+            return redirect(url_for('api.home'))
+class UnitsView(ModelView):
+    column_searchable_list=(Units.name,Units.code)
+    def is_accessible(self):
+        return current_user.is_admin
+    def inaccessible_callback(self, name, **kwargs):
+        if not self.is_accessible():
+            return redirect(url_for('api.home'))
+   
+    
 admin.add_view(AdminView(AdminsList,db.session))
-admin.add_view(AdminView(Courses,db.session))
+admin.add_view(CoursesView(Courses,db.session))
 admin.add_view(AdminView(Users,db.session))
-admin.add_view(AdminView(Units,db.session))
-admin.add_view(AdminView(Notes,db.session))
+admin.add_view(UnitsView(Units,db.session))
+admin.add_view(NotesView(Notes,db.session))
