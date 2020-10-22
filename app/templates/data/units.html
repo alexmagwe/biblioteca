@@ -1,5 +1,4 @@
-{%extends 'layout.html'%}
-{%block content%}
+{%extends 'layout.html'%} {%block content%}
 <div class='container analytics-container'>
     <div class='card-container'>
         <div class=' analytics-card analytics-users'><a href="{{url_for('main.users')}}">{{Users.query.count()}} users</a></div>
@@ -8,13 +7,15 @@
         <div class=' analytics-card analytics-notes'><a href="{{url_for('main.notes')}}">{{Notes.query.count()}} Notes</a></div>
     </div>
     <div class='all-units-container'>
-        <h3>Notes</h3>
+        <h3>Units</h3>
         <ul class='units-list'>
-            {%for note in Notes.query.order_by("name").all()%}
+            {%for unit in Units.query.order_by("code").all()%}
             <li class='units-list-item'>
-                <span class=' mr-2 vague'>{{note.name}}</span> 
-                <span class='vague-darker'>{{note.unit.code}}</span>
-                <a class='units-list-items-count' target=_blank href='https://drive.google.com/file/d/{{note.id}}/view'>view</a>
+                <span class=' mr-2 vague'>{{unit.code}}</span> 
+                <span class='vague-darker'>{{unit.name}}</span>
+               {%if Notes.query.filter_by(unit_id=unit.id).count()>0%}
+                <span class='units-list-items-count'>{{Notes.query.filter_by(unit_id=unit.id).count()}}</span>
+            {%endif%}
             </li>
             {%endfor%}  
         </ul> 

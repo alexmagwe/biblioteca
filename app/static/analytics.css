@@ -31,7 +31,6 @@
     padding:10px;
     margin: 10px;
     color:#fff;
-    font-weight: 600;
 }
 .analytics-users{
     background:linear-gradient(45deg,#321fdb 0%,#1f1498 100%);
@@ -43,6 +42,7 @@
 }
 .analytics-units{
     background:linear-gradient(45deg,#f9b115 0%,#f6960b 100%);
+    
 }
 .analytics-notes{
     background:linear-gradient(45deg,#e55353 0%,#d93737 100%);
@@ -59,11 +59,23 @@
 .units-list-item{
     display:block;
     display: flex;
-    font-size:16px;
+   
     padding:5px;
     border-bottom:1px solid silver;
     justify-content:flex-start;
     margin:10px;
+}
+.analytics-card a{
+    color:inherit;
+    font-size:16px;
+    font-weight: 600;
+    text-decoration: none;
+
+
+}
+.analytics-card a:hover,.analytics-card a:focus{
+  transform: scale(1.1);
+
 }
 .units-list-items-count{
     margin-left:auto;

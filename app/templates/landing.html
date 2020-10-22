@@ -1,10 +1,10 @@
 {%extends 'layout.html'%} {%block content%}
 <div class='container analytics-container'>
     <div class='card-container'>
-        <div class=' analytics-card analytics-users'>{{Users.query.count()}} Users</div>
-        <div class=' analytics-card analytics-courses'>{{Courses.query.count()}} Courses</div>
-        <div class=' analytics-card analytics-units'>{{Units.query.count()}} Units</div>
-        <div class=' analytics-card analytics-notes'>{{Notes.query.count()}} Notes</div>
+        <div class=' analytics-card analytics-users'><a href="{{url_for('main.users')}}">{{Users.query.count()}} users</a></div>
+        <div class=' analytics-card analytics-courses'><a href="{{url_for('main.courses')}}">{{Courses.query.count()}} courses</a></div>
+        <div class=' analytics-card analytics-units'><a href="{{url_for('main.units')}}">{{Units.query.count()}} units</a></div>
+        <div class=' analytics-card analytics-notes'><a href="{{url_for('main.notes')}}">{{Notes.query.count()}} Notes</a></div>
     </div>
     <div class='all-units-container'>
         <ul class='units-list'>
