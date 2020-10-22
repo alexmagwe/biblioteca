@@ -10,7 +10,6 @@ html,body{
 ul{
     list-style: none;
 }
-
 @font-face {
     font-family: fira;
     src: url('fonts/firasans/FiraSans-Bold.otf')
