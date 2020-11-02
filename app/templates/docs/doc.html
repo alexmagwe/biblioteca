@@ -4,7 +4,11 @@
    
             <div class="docs-side-bar">
                 <a href="#section-1" class="sidebar-link">Authentication</a>
-                <a href="#units" class="sidebar-sub-link">Units</a>
+                <a href="#courses" class="sidebar-link">Courses</a>
+                <a href="#units" class="sidebar-link">Units</a>
+                <a href="#all-units" class="sidebar-sub-link">all units</a>
+                <a href="#course-units" class="sidebar-sub-link">Course units</a>
+                <a href="#notes" class="sidebar-sub-link">Unit notes</a>
                 <a href="#upload-section" class="sidebar-link">Upload</a>
                 <a href="#upload-single" class="sidebar-sub-link">Single Upload</a>
                 <a href="#upload-multiple" class="sidebar-sub-link">Multiple upload</a>
@@ -13,24 +17,83 @@
                 <div id='section-1' class="section">
                     <h2>Authentication</h2>
                     <p>
-                        All requests must be done over https 
+                        All requests must be done over https <br>
+                        <b>all requests should be prefixed with <i class='text-primary'>https://uon-notes-api.herokuapp.com/api/ </i> then the actual routes</b>
                 </p>
                 
                 </div>
+                         <div id='courses'>
+                    <h3>Courses</h3>
+                    <p>
+                        To get all courses send a GET request to <code>/courses/all</code><br>
+
+                    </p>
+                    <p>
+                            The response is a list of objects ,each object representing a course<br>
+                            [<br>
+                            &nbsp;{<br>
+                               &nbsp;&nbsp; "code": "unit code",<br>
+                                &nbsp;&nbsp;"name": "unit name",<br>
+                            &nbsp;&nbsp;},<br>
+                           ...<br>
+                           ]<br>
+                        </p>
+
+                </div>
                 <div id="units">
                     <h2>Units</h2>
-                    <p>
-                        To get units of a course send a POST request to <i class='text-primary'>/course/units</i>
+                    <h3>All units</h3>
+                       <div id='all-units'>
+                        To get all units send a <b>GET</b> request to <i class='text-primary'>/units/all</i>
                         <br>
-                        Request payload should be a json object containing course code and optionally an year. <br>
-                        If year is not present ,all units for the specified course shall be returned <br>
-                       <b> payload:</b> <br> <br>
-                       <code>
-                           &nbsp;&nbsp;{'course_code':"string",<br>
-                        &nbsp;&nbsp;"year"=int betweeen 1 and 4 <br>
+                        
+                        <h4>Response:</h4>
+
+                        <p>
+                            The response is a list of objects ,each object representing a unit<br>
+                            [<br>
+                            &nbsp;{<br>
+                               &nbsp;&nbsp; "code": "unit code",<br>
+                                &nbsp;&nbsp;"name": "unit name",<br>
+                               &nbsp; &nbsp;"year": 1 to 4,<br>
+                                &nbsp;&nbsp;"semester": "1 or 2"<br>
+                            &nbsp;&nbsp;},<br>
+                           ...<br>
+                           ]<br>
+                        </p>
+                        </div>
+                        <div id='course-units'>
+                            <h3>Course Units</h3>
+                            To get units of a course send a <b>POST</b> request to <i class='text-primary'>/course/units</i>
+                            <br>
+                            Request payload should be a json object containing course code and optionally an year. <br>
+                            If year is not present ,all units for the specified course shall be returned <br>
+                            <b> Request payload:</b> <br> <br>
+                            <code>
+                             &nbsp;{'course_code':"string",<br>
+                             &nbsp;&nbsp;"year"=int betweeen 1 and 4 <br>
+                             &nbsp;}
+                            </code>
+                            <h4>Response:</h4>
+                            The response is a list of objects ,each object representing a unit ,<br>
+                            the response is the same as all units response but the results are limited to the course requested and the year if included<br>
+                      
+                        </div>
+                </div>
+            
+                <div id='notes'>
+                    <h3>Unit notes</h3>
+                    <p>
+                        To get notes of a unit send a POST request to <code>/unit/notes/all</code><br>
+                        the payload should be an object containing the unit_code <br>
+                        <b>Request payload:</b>
+                          <code>
+                        &nbsp;{<br>&nbsp;'unit_code':"string",<br>
                      &nbsp;}
                        </code>
+
                     </p>
+
                 </div>
                 <div id='upload-section' class="section">
                 <h2>Upload</h2>
@@ -41,9 +104,7 @@
                     <br>
                     To send multiple files,the "notes" object in the form data should be an array of file objects
                     <br>
-                    <br>
-                    The unit code for the file must be sent with the request,it can be included in the headers of the request or as part of the form data <br>
-        
+                    <br>        
                 </p>
                 
                 <p id='upload-single'>   <h5>Uploading single file in javascript using axios</h5>
@@ -52,28 +113,15 @@
                         file=(file object); <br>
                         let formData=new formData(); <br>
                         formdata.append('notes',file);<br>
-                        &nbsp;<b>axios.post('/upload',formData,<br>
+                        &nbsp;<b>axios.post('/https://alex2kepler.pythonanywhere.com/upload',formData,<br>
                         &nbsp;{ <br>
-                            &nbsp;headers:{"Content-Type":"multipart/form-data",<span style='color:rgb(47, 102, 255)'>unit=unit_code</span>} <br>
+                            &nbsp;headers:{"Content-Type":"multipart/form-data"} <br>
                         &nbsp;} </b><br>
                         )
-                        </code></p>
-                        <p>
-                            <h5>Adding the unit code as part of form data</h5>
-                        <code>
-                        unit_code='some unit' <br>
-                        file=(file object); <br>
-                        let formData=new formData(); <br>
-                        formdata.append('notes',file);<br>
-                        formdata.append('unit',<span style='color:rgb(47, 102, 255)'>unit=unit_code</span>);<br> <br>
-                        &nbsp <b> axios.post('/upload',formData,<br>
-                        &nbsp;{ <br>
-                            &nbspheaders:{"Content-Type":"multipart/form-data"} <br>
-                        &nbsp;} </b><br>
-                        )
-                        </code></p>
-                            
-                <p>  <h5 id='upload-multiple'>Uploading Multiple files</h5>
+                        </code>
+                    </p>
+                <p>  
+                    <h5 id='upload-multiple'>Uploading Multiple files</h5>
                         the files should be saved in a list then each file appended independently to the formData <br>
                         the array of files should not be added directly to the form data but iterated over appending each individually <br>
                         <br>
@@ -83,7 +131,7 @@
                         files.forEach(file=>formdata.append('notes',file));<br>
                         &nbsp<b>axios.post('/upload',formData,<br>
                         &nbsp;{ <br>
-                            &nbsp;headers:{"Content-Type":"multipart/form-data",<span style='color:rgb(47, 102, 255)'>unit=unit_code</span>} <br>
+                            &nbsp;headers:{"Content-Type":"multipart/form-data"} <br>
                         &nbsp;} </b><br>
                         )
                         </code>
