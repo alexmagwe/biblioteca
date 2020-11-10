@@ -33,7 +33,8 @@
                 <ul class="navbar-nav ml-auto">
                     {%if current_user.is_admin%}
                     <li class='nav-item'><a class='nav-link' href="/api/try" id='docs'>Try</a></li>
-                    {%endif%}
+                    <li class='nav-item'><a class='nav-link' href="{{url_for('auth.add_admin')}}" id='invite'>Invite</a></li>
+		    {%endif%}
                     <li class='nav-item'><a class='nav-link' href="{{url_for('api.docs')}}" id='docs'>Docs</a></li>
 
                     {%if current_user.is_anonymous%}
