@@ -38,7 +38,7 @@ def callback():
         login_user(user)
     elif admin and not user:
         u=Users(email=user_data['email'])
-        res=u.register()
+        res=u.add()
         if res:
             n=Users.query.filter_by(email=user_data['email']).first()
             login_user(n)
