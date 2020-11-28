@@ -1,14 +1,17 @@
-from flask import url_for,render_template,current_app
+from flask import url_for,render_template,current_app,redirect,request
 from flask_login import current_user
+from ..models import Units
+from ..filters import filter_extension,filter_semester,filter_year,filter_year_and_semester
 from . import main
+import os
 
 
 @main.route('/home')
 @main.route('/')
 def home():
     if current_user.is_authenticated:
-        print('user is authenticated')
-        return render_template('landing.html')
+        units=Units.query.order_by("code").all()
+        return render_template('landing.html',units=units)
     else:
         return render_template('home.html')
 
@@ -28,7 +31,8 @@ def courses():
 
 @main.route('/units',methods=['GET'])
 def units():
-    return render_template('data/units.html')
+    units=Units.query.all()
+    return render_template('data/units.html',units=units)
 
 @main.route('/notes',methods=['GET'])
 def notes():
@@ -38,6 +42,44 @@ def notes():
 def users():
     return render_template('data/users.html')
 
+@main.route('/units/<int:id>',methods=['GET'])
+def unit(id):
+    unit=Units.query.get(id)
+    return render_template('unit/unit.html',unit=unit,notes=unit.notes)
+
+@main.route('/filter/units/',methods=['GET'])
+def filter_units():
+    year,semester=int(request.args.get('year')),request.args.get('semester')
+    if year and semester:
+        results=filter_year_and_semester(year,semester)
+        return render_template('data/units.html',units=results)
+    elif year and not semeseter:
+        results=filter_year(year)
+        return render_template('data/units.html',units=results)
+    elif semester and not year:
+        results=filter_semester(semester)
+        return render_template('data/units.html',units=results)
+
+    results=[]
+    if case and unit:
+        if case=='all':
+            return render_template('unit/unit.html',unit=unit,notes=unit.notes)
+        ext='.'+case
+        results=filter_extension(unit.notes,ext)
+    return render_template('unit/unit.html',unit=unit,notes=results)
+
+
+@main.route('/filter/ext/<int:id>/',methods=['GET'])
+def filter_ext(id):
+    unit=Units.query.get(id)
+    case=request.args.get('extension')
+    results=[]
+    if case and unit:
+        if case=='all':
+            return render_template('unit/unit.html',unit=unit,notes=unit.notes)
+        ext='.'+case
+        results=filter_extension(unit.notes,ext)
+    return render_template('unit/unit.html',unit=unit,notes=results)
 
 
 @main.route('/upload_notes',methods=['GET'])
@@ -47,3 +89,4 @@ def upload_notes():
 @main.route('/docs',methods=['GET'])
 def docs():
     return render_template('/docs/doc.html')
+

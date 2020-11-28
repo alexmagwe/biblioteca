@@ -1,0 +1,7 @@
+{%macro data_item(item)%}
+<li class=units-list-item>
+<span class=' mr-2 vague'>{{item.name}}</span> 
+<span class='vague-darker'>{{item.unit.code}}</span>
+<a class='units-list-items-count' target=_blank href='https://drive.google.com/file/d/{{item.gid}}/view'>view</a>
+</li>
+{%endmacro%}

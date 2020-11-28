@@ -12,6 +12,9 @@
     flex-wrap: wrap;
 
 }
+.unit-banner{
+    background:linear-gradient(45deg,#f9b115 0%,#f6960b 100%);
+}
 .vague{
     color:rgb(53, 51, 51);
 }

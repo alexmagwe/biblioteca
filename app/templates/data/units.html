@@ -8,15 +8,36 @@
     </div>
     <div class='all-units-container'>
         <h3>Units</h3>
+        <div class='form-container'>
+            <form action='/filter/units' method="get" id='filter_ext'>
+                <div class='form-group d-flex p-2 ml-auto w-75 justify-content-around'>
+                    <h5>year</h5>
+                    <select name='year' class='form-control w-25'>
+                        <option value="" selected disabled hidden></option>
+                        <option value='1'>1</option>
+                        <option value='2'>2</option>
+                        <option value='3'>3</option>
+                        <option value='4'>4</option>
+                    </select>
+                 <h5>semester</h5>
+                 <select name='semester' class='form-control w-25' >
+                    <option value="" selected disabled hidden></option>
+                        <option value='1'>1</option>
+                        <option value='2'>2</option>
+                    </select>
+                    <button type='submit mt' class='btn btn-secondary'>filter</button>
+            </div>
+            </form>
+        </div>
         <ul class='units-list'>
-            {%for unit in Units.query.order_by("code").all()%}
-            <li class='units-list-item'>
+            {%for unit in units%}
+            <a href="{{url_for('main.unit',id=unit.id)}}" class='units-list-item'>
                 <span class=' mr-2 vague'>{{unit.code}}</span> 
                 <span class='vague-darker'>{{unit.name}}</span>
                {%if Notes.query.filter_by(unit_id=unit.id).count()>0%}
                 <span class='units-list-items-count'>{{Notes.query.filter_by(unit_id=unit.id).count()}}</span>
             {%endif%}
-            </li>
+            </a>
             {%endfor%}  
         </ul> 
      </div>

@@ -9,14 +9,14 @@
     <div class='all-units-container'>
         <ul class='units-list'>
             <h3>Units</h3>
-            {%for unit in Units.query.order_by("code").all()%}
-            <h3 class='units-list-item'>
+            {%for unit in units%}
+            <a href="{{url_for('main.unit',id=unit.id)}}"class='units-list-item'>
                 <span class=' mr-2 vague'>{{unit.code}}</span> 
                 <span class='vague-darker'>{{unit.name}}</span>
                {%if Notes.query.filter_by(unit_id=unit.id).count()>0%}
                 <span class='units-list-items-count'>{{Notes.query.filter_by(unit_id=unit.id).count()}}</span>
             {%endif%}
-            </h3>
+            </a>
             {%endfor%}  
         </ul> 
      </div>
