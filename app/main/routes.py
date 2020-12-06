@@ -49,11 +49,12 @@ def unit(id):
 
 @main.route('/filter/units/',methods=['GET'])
 def filter_units():
-    year,semester=int(request.args.get('year')),request.args.get('semester')
+    year,semester=request.args.get('year'),request.args.get('semester')
     if year and semester:
+        year=int(year)
         results=filter_year_and_semester(year,semester)
         return render_template('data/units.html',units=results)
-    elif year and not semeseter:
+    elif year and not semester:
         results=filter_year(year)
         return render_template('data/units.html',units=results)
     elif semester and not year:
