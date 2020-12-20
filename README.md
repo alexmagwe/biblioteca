@@ -6,9 +6,6 @@
 university of nairobi notes api for access to soft copies of units
 
 ##### Features remaining
-* admin dashboard
-* code refactoring 
-* adding notes to the db
 * create a backup db 
 * writing tests
 * db support for assignments and lecture videos
