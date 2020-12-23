@@ -11,6 +11,7 @@ from datetime import datetime
 
 class Permissions:
     ADMIN = 16
+    MODERATE = 12
     ADDNOTES = 8
     MYNOTES = 4
 
@@ -57,7 +58,7 @@ class Users(db.Model, UserMixin, Utilities):
         return self.permissions is not None and self.has_permission(perm)
 
     def has_permission(self, p):
-        return self.permissions & p == p  # BITWISE AND COMPARISON  OF  INPUT AND SELF.PERM
+        return self.permissions >= p
 
     @property
     def is_admin(self):
@@ -106,6 +107,9 @@ class Courses(db.Model, Utilities):
     def __repr__(self):
         return f'course:{self.name}'
 
+    def to_json(self):
+        return {'name': self.name, 'code': self.code}
+
 
 class Units(db.Model, Utilities):
     id = db.Column(db.Integer, unique=True,
@@ -119,6 +123,9 @@ class Units(db.Model, Utilities):
 
     def __repr__(self):
         return f'unit:{self.code},year:{self.year},semester:{self.semester},no of notes:{len(self.notes)}'
+
+    def to_json(self):
+        return {'code': self.code, 'name': self.name, 'year': self.year, 'semester': self.semester}
 
     @staticmethod
     def generate():
@@ -143,10 +150,13 @@ class Notes(db.Model, Utilities):
     unit_id = db.Column(db.Integer, db.ForeignKey('units.id'), nullable=False)
     gid = db.Column(db.String(), unique=True, index=True)
     category = db.Column(db.String(20), default=Categories.DOCUMENT)
-    date_uploaded = db.Column(db.DateTime,index=True,default=datetime.utcnow)
+    date_uploaded = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
         return f'notes:{self.name}'
+
+    def to_json(self):
+        return {"id": self.id, "name": self.name, "gid": self.gid, "category": self.category}
 
 
 class AdminView(ModelView):
