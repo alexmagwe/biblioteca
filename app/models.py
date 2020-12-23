@@ -122,7 +122,7 @@ class Units(db.Model, Utilities):
     courses_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
 
     def __repr__(self):
-        return f'unit:{self.code},year:{self.year},semester:{self.semester},no of notes:{len(self.notes)}'
+        return f'id:{self.id},unit:{self.code},year:{self.year},semester:{self.semester},no of notes:{len(self.notes)}'
 
     def to_json(self):
         return {'code': self.code, 'name': self.name, 'year': self.year, 'semester': self.semester}
@@ -174,7 +174,7 @@ class AdminView(ModelView):
 
 
 class NotesView(ModelView):
-    column_searchable_list = (Notes.name, Notes.unit_id)
+    column_searchable_list = (Notes.name, Notes.category,Notes.unit_id)
 
     def is_accessible(self):
         return current_user.is_admin

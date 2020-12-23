@@ -1,6 +1,6 @@
 from flask import url_for,render_template,current_app,redirect,request
 from flask_login import current_user
-from ..models import Units
+from ..models import Units,Notes
 from ..filters import filter_extension,filter_semester,filter_year,filter_year_and_semester
 from . import main
 import os
@@ -36,7 +36,8 @@ def units():
 
 @main.route('/notes',methods=['GET'])
 def notes():
-    return render_template('data/notes.html')
+    notes=Notes.query.all()
+    return render_template('data/notes.html',notes=notes)
 
 @main.route('/users',methods=['GET'])
 def users():
@@ -69,7 +70,7 @@ def filter_units():
         results=filter_extension(unit.notes,ext)
     return render_template('unit/unit.html',unit=unit,notes=results)
 
-
+#filtering notes of a single unit
 @main.route('/filter/ext/<int:id>/',methods=['GET'])
 def filter_ext(id):
     unit=Units.query.get(id)
@@ -81,6 +82,18 @@ def filter_ext(id):
         ext='.'+case
         results=filter_extension(unit.notes,ext)
     return render_template('unit/unit.html',unit=unit,notes=results)
+#filtering all notes
+@main.route('/filter/ext/',methods=['GET'])
+def filter_notes_ext():
+    notes=Notes.query.all()
+    case=request.args.get('extension')
+    results=[]
+    if case and unit:
+        if case=='all':
+            return render_template('data/notes.html',notes=notes)
+        ext='.'+case
+        results=filter_extension(notes,ext)
+    return render_template('data/notes.html',notes=results)
 
 
 @main.route('/upload_notes',methods=['GET'])

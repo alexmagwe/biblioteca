@@ -16,12 +16,12 @@
             const code = form.elements['course_code'].value;
 
 
-            fetch('/api/course/notes',{
+            fetch('/api/unit/notes/all',{
                 method:'POST',
                 headers:{
                 'Content-Type':'application/json',
                 },
-                body:JSON.stringify({'course_code':code})
+                body:JSON.stringify({'unit_code':code})
                     }
                 )
                 .then(resp => resp.json())
@@ -30,8 +30,7 @@
                         console.log(data['error'])
                     } else {
                         console.log(data)
-                        let notes = data;
-                        notes.forEach(el => {
+                        data.notes.forEach(el => {
                             let item = document.createElement('li')
                             let view = document.createElement('a')
 

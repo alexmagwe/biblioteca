@@ -1,5 +1,6 @@
 {%extends 'layout.html'%}
 {%from 'macros.html' import data_item with context%}
+{%from 'macros.html' import filter_form with context%}
 {%block content%}
 <div class='container'>
     <div class='p-2 unit-banner'>
@@ -10,20 +11,7 @@
         <span class='vague'>Semester {{unit.semester}}</span>
 
     </p>
-        <div class='extension_filter_form container-fluid'>
-            <form class='form-group d-flex w-25 p-2 ml-auto justify-content-center' action='/filter/ext/{{unit.id}}' method="get" id='filter_ext'>
-                <select name='extension' id='file_extensions' class='form-control'>
-                    <option value='pdf'>pdf</option>
-                    <option value='docx'>docx</option>
-                    <option value='doc'>doc</option>
-                    <option value='ppt'>ppt</option>
-                    <option value='.mp4'>video</option>
-                    <option value='all'>all</option>
-
-                </select>
-                <button class='btn btn-secondary' type='submit'>filter</button>
-            </form>
-        </div>
+        {{filter_form('unit')}}
     </div>
     <div>
         <ul class='units-list'>

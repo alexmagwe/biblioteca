@@ -1,4 +1,6 @@
 {%extends 'layout.html'%}
+{%from 'macros.html' import filter_form with context%}
+
 {%block content%}
 <div class='container analytics-container'>
     <div class='card-container'>
@@ -9,8 +11,9 @@
     </div>
     <div class='all-units-container'>
         <h3>Notes</h3>
+        {{filter_form('all')}}
         <ul class='units-list'>
-            {%for note in Notes.query.order_by("name").all()%}
+            {%for note in notes%}
             <li class='units-list-item'>
                 <span class=' mr-2 vague'>{{note.name}}</span> 
                 <span class='vague-darker'>{{note.unit.code}}</span>

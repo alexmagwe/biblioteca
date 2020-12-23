@@ -5,3 +5,23 @@
 <a class='units-list-items-count' target=_blank href='https://drive.google.com/file/d/{{item.gid}}/view'>view</a>
 </li>
 {%endmacro%}
+{%macro filter_form(case)%}
+       <div class='extension_filter_form container-fluid'>
+           {%if case=='unit'%}
+            <form class='form-group d-flex w-25 p-2 ml-auto justify-content-center' action='/filter/ext/{{unit.id}}' method="get" id='filter_ext'>
+                {%else%}
+                <form class='form-group d-flex w-25 p-2 ml-auto justify-content-center' action='/filter/ext' method="get" id='filter_ext'>
+               {%endif%}
+                <select name='extension' id='file_extensions' class='form-control'>
+                    <option value='pdf'>pdf</option>
+                    <option value='docx'>docx</option>
+                    <option value='doc'>doc</option>
+                    <option value='ppt'>ppt</option>
+                    <option value='.mp4'>video</option>
+                    <option value='all'>all</option>
+
+                </select>
+                <button class='btn btn-secondary' type='submit'>filter</button>
+            </form>
+        </div>
+{%endmacro%}
