@@ -26,7 +26,6 @@ class Development(Config):
     MAIL_USERNAME= '18046de32e56fe'
     MAIL_PASSWORD= 'a0ad48ed8fb0a0'
     SQLALCHEMY_DATABASE_URI=os.getenv('DATABASE_URL')
-    print(SQLALCHEMY_DATABASE_URI)
 class Production(Config):
     SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL')
     MAIL_USE_TLS=True

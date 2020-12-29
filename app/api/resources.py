@@ -8,7 +8,7 @@ import sys
 from flask_restx import Resource, reqparse, fields
 import os
 import json
-from ..models import Courses, Units, Users, Notes
+from ..models import Courses, Units, Users, Notes,Categories
 
 
 def find_user(em):
@@ -98,7 +98,19 @@ class UnitNotes(Resource):
         if(code := data.get('unit_code')):
             unit = find_unit(code)
             if unit:
-                return {"unit": unit.name, "code": unit.code, 'notes': [note.to_json() for note in unit.notes]}
+                notes={Categories.DOCUMENT:[],Categories.VIDEO:[],Categories.ASSIGNMENT:[]}
+                for note in unit.notes:
+                    print(note.to_json())
+                    if note.category==Categories.DOCUMENT:
+                        notes[Categories.DOCUMENT].append(note.to_json())
+                    elif note.category==Categories.VIDEO:
+                        notes[Categories.VIDEO].append(note.to_json())
+                    elif note.category==Categories.ASSIGNMENT:
+                        notes[Categories.ASSIGNMENT].append(note.to_json())
+                    else:
+                        notes[Categories.DOCUMENT].append(note.to_json())
+                print(notes)
+                return {"unit": unit.name, "code": unit.code, 'notes': notes}
             else:
                 return {'error': 'unit not found'}
         else:
