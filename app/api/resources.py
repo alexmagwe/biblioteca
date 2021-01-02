@@ -309,18 +309,21 @@ class Exists(Resource):
 class AddUnit(Resource):
     @myapi.expect(aumodel)
     def post(self):
+        print(request.json)
         data = request.json
         if data.get('course_code') and data.get('name') and data.get('unit_code') and data.get('semester') and data.get('year'):
             unit = find_unit(data.get('unit_code'))
-            course = find_course(data.get('code'))
+
+            course = find_course(data.get('course_code'))
+            print(course)
             if unit:
                 return
             elif not unit and course:
                 u = Units(name=data.get('name'), code=data.get('unit_code'), semester=data.get(
-                    'semester'), year=data.get(year), course_id=course.id)
+                    'semester'), year=data.get('year'), courses_id=course.id)
                 res = u.add()
                 if res:
-                    return {'message': 'added sucessfully'}
+                    return {'message': 'added sucessfully'},201
                 else:
                     return {'error': 'try again later'}, 500
             elif not unit and not course:
@@ -328,4 +331,4 @@ class AddUnit(Resource):
             else:
                 return
         else:
-            return {'error': 'missing information'}, 400
+            return {'error': 'missing information'}, 500

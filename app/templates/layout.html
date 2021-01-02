@@ -32,8 +32,8 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     {%if current_user.is_admin%}
-                    <li class='nav-item'><a class='nav-link' href="/api/try" id='docs'>Try</a></li>
-                    <li class='nav-item'><a class='nav-link' href="{{url_for('auth.add_admin')}}" id='invite'>Invite</a></li>
+                    <li class='nav-item'><a target='_blank' class='nav-link' href="/api/try" id='docs'>Try</a></li>
+                    <li class='nav-item'><a target='_blank' class='nav-link' href="{{url_for('auth.add_admin')}}" id='invite'>Invite</a></li>
 		    {%endif%}
                     <li class='nav-item'><a class='nav-link' href="{{url_for('api.docs')}}" id='docs'>Docs</a></li>
 

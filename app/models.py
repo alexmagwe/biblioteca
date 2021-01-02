@@ -128,14 +128,16 @@ class Units(db.Model, Utilities):
         return {'code': self.code, 'name': self.name, 'year': self.year, 'semester': self.semester}
 
     @staticmethod
-    def generate():
-        id = Courses.query.first().id
+    def generate(course_id='I39'):
+        course_id=course_id.upper()
+        id = Courses.query.filter_by(code=course_id).first()
         with open(os.path.abspath('units.json')) as f:
             data = json.load(f)
             for unit in data:
-                u = Units(name=unit['name'], code=unit['code'],
-                          year=unit['year'], semester=unit['semester'], courses_id=id)
-                db.session.add(u)
+                if not Units.query.filter_by(code=unit['code']).first():
+                    u = Units(name=unit['name'], code=unit['code'],year=unit['year'], semester=unit['semester'], courses_id=id)
+                    print(f'adding {u.code}')
+                    db.session.add(u)
             try:
                 db.session.commit()
                 print('success')
