@@ -65,7 +65,7 @@ class Gdrive:
         return main_batch
     def create_and_start_tasks(self,main_batch):
         threads=[]
-        for task in main_batch:
+        for batch in main_batch:
             threads.append(threading.Thread(target=self.delete_batch,args=(batch)))
         for thread in threads:
             thread.start()
