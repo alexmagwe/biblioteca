@@ -53,7 +53,7 @@ class Gdrive:
                 self.duplicateslist.append(file)
         return self.duplicateslist
     
-    def batch_duplicates(self,size):
+    def batch_duplicates(self,size=20):
         main_batch=[]
         no_of_batches=math.ceil(len(self.duplicateslist)/size)
         
