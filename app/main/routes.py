@@ -27,6 +27,11 @@ def drive(page):
     num_files=gdrive.get_num_files()
     return render_template('drive/drive.html',files=files,num=num_files,pages=pages)
 
+@main.route('/reload_drive/',methods=[ 'GET'])
+def reload_drive():
+    gdrive.files=[]
+    return redirect(url_for('main.drive',page=1))
+
 @main.route('/duplicates',methods=[ 'GET','POST','DELETE'])
 def duplicates():
     if len(gdrive.files)==0:

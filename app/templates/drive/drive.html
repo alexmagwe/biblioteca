@@ -1,6 +1,7 @@
 {% extends 'layout.html' %} {%block content%}
 <div class="container">
     <h1 class="h1">drive folder</h1>
+    <a class='nav-link' href='/reload_drive'>reload</a>
     <h3 class="h3">{{num}} files found</h3>
     {%if current_user.is_admin%}
     <div class="bg-light">
