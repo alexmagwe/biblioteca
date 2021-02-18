@@ -1,0 +1,146 @@
+[
+    {
+        "unit_code": "SPH 419",
+        "name": "Quantum Electronics",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 422",
+        "name": "Industrial Project",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 424",
+        "name": "Signal Recovery and Processing",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 401",
+        "name": "Atomic Physics",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 402",
+        "name": "Nuclear Physics",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 403",
+        "name": "Solid State Physics II",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 404",
+        "name": "Statistical Physics",
+        "semester": "1  ",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 405",
+        "name": "Electrodynamics II",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 408",
+        "name": "Physics of Materials",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 409",
+        "name": "Quantum Mechanics II",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 418",
+        "name": "Power Electronics",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 423",
+        "name": "Database Systems",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 425",
+        "name": "Image Processing",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 426",
+        "name": "Computer Security",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 427",
+        "name": "Distributed Systems",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 428",
+        "name": "Artificial Intelligence",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 430",
+        "name": "Industrial Electronics and Automation",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 431",
+        "name": "Antennae and radio wave propagation",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 432",
+        "name": "Satellite and Mobile Communication Systems",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 433",
+        "name": "Biomedical Instrumentation",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 434",
+        "name": "Radiotherapeutic and Imaging Techniques",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 435",
+        "name": "Applied Biophysics",
+        "semester": "2",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 436",
+        "name": "Biomedical and Radiometrics Laboratory",
+        "semester": "1",
+        "year": 4
+    },
+    {
+        "unit_code": "SPH 439",
+        "name": "Compilers",
+        "semester": "1",
+        "year": 4
+    }
+]

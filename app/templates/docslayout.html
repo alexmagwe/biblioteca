@@ -44,6 +44,7 @@
                         </li>
                        {%if current_user.is_admin%}
                     <li class='nav-item'><a class='nav-link' href="/api/try" id='docs'>Try</a></li>
+                    <li class='nav-item'><a class='nav-link' href="{{url_for('main.drive',page=1)}}">Drive</a></li>
                     {%endif%}
                     <li class='nav-item'><a class='nav-link' href="{{url_for('api.docs')}}" id='docs'>Docs</a></li>
 

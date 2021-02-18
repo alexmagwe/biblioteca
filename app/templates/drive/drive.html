@@ -1,0 +1,31 @@
+{% extends 'layout.html' %} {%block content%}
+<div class="container">
+    <h1 class="h1">drive folder</h1>
+    <h3 class="h3">{{num}} files found</h3>
+    {%if current_user.is_admin%}
+    <div class="bg-light">
+        <li class="font-weight-bold list-group-item">
+            <a class="nav-link" href="/duplicates">discover Duplicates</a>
+        </li>
+    </div>
+    {%endif%}
+<div class='bg-dark'>
+
+    <ul class="pagination text-center">
+        {%for page in range(1,pages)%}
+        <li class="mr-3">
+            <a class='card-link text-light' href="{{url_for('main.drive',page=page)}}">{{page}}</a>
+        </li>
+        {%endfor%}
+    </ul>
+</div>
+    <ul class='list-unstyled'>
+        {% for file in files%}
+        <li class='flex-row'>
+            <span class='font-weight-bold'>{{file.name}}</span>
+            <span class="font-italic">{{file.id}}</span>
+        </li>
+    </ul>
+    {%endfor%}
+</div>
+{%endblock%}

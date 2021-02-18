@@ -4,8 +4,9 @@ from ..models import Units,Notes
 from ..filters import filter_extension,filter_semester,filter_year,filter_year_and_semester
 from . import main
 import os
+from ..auth.driveauth import Gdrive
 
-
+gdrive=Gdrive()
 @main.route('/home')
 @main.route('/')
 def home():
@@ -14,7 +15,39 @@ def home():
         return render_template('landing.html',units=units)
     else:
         return render_template('home.html')
+@main.route('/drive/page/<int:page>',methods=[ 'GET','POST'])
+def drive(page):
+    pages=len(gdrive.files)
+    if len(gdrive.files)>0 and page<=pages:
+        files=gdrive.files[page]
+    else:
+        gdrive.get_files(30)
+        files=gdrive.files
+        files=files[page]
+    num_files=gdrive.get_num_files()
+    return render_template('drive/drive.html',files=files,num=num_files,pages=pages)
 
+@main.route('/duplicates',methods=[ 'GET','POST','DELETE'])
+def duplicates():
+    if len(gdrive.files)==0:
+        gdrive.get_files(30)
+    if len(gdrive.duplicateslist)==0:
+        duplicates=gdrive.find_duplicates()
+    else:
+        duplicates=gdrive.duplicateslist
+    num=len(duplicates)
+    if request.method=='DELETE':
+        # failed=gdrive.test_delete_duplicates()
+        failed=gdrive.delete_duplicates()
+        if failed>0:
+            return {'error':f'failed to delete {failed} files'}
+        else:return {'success':f'{num} duplicate files deleted succesfully'}
+    return render_template('drive/duplicates.html',duplicates=duplicates,num=num)
+
+# @main.route('/duplicates',methods=['DELETE'])
+# def deleteduplicates():
+    
+    
                            
 @main.route('/new_course',methods=['GET'])
 def new_course():

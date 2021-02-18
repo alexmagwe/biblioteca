@@ -1,0 +1,36 @@
+{% extends 'docslayout.html' %}
+{%block content%}
+<div class='container'>
+    <h3>{{num}} files with duplicates </h3>
+    <div>
+      <form class='form-group' id='delete-duplicates'>
+          <button type='submit' class='btn btn-primary'>delete all duplicates</button>
+      </form>
+    </div>
+    <p id='result'></p>
+</div>
+<script>
+    window.addEventListener('load', () => {
+        let result = document.querySelector('#result')
+        let form = document.querySelector('#delete-duplicates');
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            fetch('/duplicates',{
+                method:'DELETE',
+                    }
+                )
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data['error']) {
+                        alert(data['error'])
+                    } else {
+                            console.log(data)
+                            let item = document.createElement('span')
+                            item.innerHTML = data['success']
+                    }
+
+                })
+        })
+    })
+</script>
+{%endblock%}
