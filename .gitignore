@@ -15,3 +15,5 @@ notes.code-workspace
 google-credentials.json
 *.sqlite
 .env
+script.py
+unit*.json
