@@ -20,24 +20,18 @@ SCOPES = ['https://www.googleapis.com/auth/drive.metadata',
           'https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive', ]
 # SERVICE_ACCOUNT_FILE = 'secrets.json'
 SERVICE_ACCOUNT_FILE = getcredspath()
+FOLDER_ID='1E8IWN4ROK2bICbOvwsc8GZw2bgj96wBy'
 
 
 class Gdrive:
     MIMETYPES = {}
-    # @staticmethod
-    # def getcreds():
-    #     creds = service_account.Credentials.from_service_account_file(
-    #     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-    #     return creds
-
     def __init__(self, testing=False, *args, **kwargs):
         creds = service_account.Credentials.from_service_account_file(
             SERVICE_ACCOUNT_FILE, scopes=SCOPES)
         self.drive = build('drive', 'v3', credentials=creds)
-        self.main_folder_id = '1E8IWN4ROK2bICbOvwsc8GZw2bgj96wBy'
+        self.main_folder_id = FOLDER_ID
         self.files = []
         self.duplicateslist = []
-        self.failed = []
         self.testing = testing
         # print('drive:',self.drive)
 
@@ -92,22 +86,33 @@ class Gdrive:
                 try:
                     self.drive.files().delete(fileId=file_id).execute()
                 except Exception as error:
-                    self.failed.append(file)
                     raise error
 
+    # def delete_duplicates(self):
+    #     main_batch = self.batch_duplicates()
+    #     try:
+    #         self.create_and_start_tasks(main_batch)
+    #     except Exception as e:
+    #         return e
+    #     return False
     def delete_duplicates(self):
-        main_batch = self.batch_duplicates()
         try:
-            self.create_and_start_tasks(main_batch)
-        except Exception as e:
-            return e
-        return False # returns how many files have failed to delete
+            self.delete_batch(self.duplicateslist)
+        except Exception as error:
+            return error
+        return False
+        
+    def get_metadata(self,file_id):
+        result = self.drive.files().get(fileId=file_id,
+        fields="name, size, webContentLink, webViewLink, iconLink, mimeType").execute()
+        return result
+        
 
     def get_files(self, num=30):
         pageToken = None
         while True:
             results = self.drive.files().list(q="'" + self.main_folder_id + "' in parents",
-                                              fields="files(name, id, size), nextPageToken", pageToken=pageToken, pageSize=num).execute()
+                                              fields="files(name, id, size, webContentLink, webViewLink, iconLink, mimeType), nextPageToken", pageToken=pageToken, pageSize=num).execute()
             # print(results)
             pageToken = results.get('nextPageToken', None)
             items = results.get('files', [])
@@ -118,7 +123,7 @@ class Gdrive:
         return items
 
     @classmethod
-    def test(cls):
+    def test_delete_duplicates(cls):
         print('testing delete functions...')
         gdrive = Gdrive(testing=True)
         if gdrive.testing:
@@ -132,16 +137,42 @@ class Gdrive:
         print(
             f'found {len(gdrive.files)} total pages of files found, each page contains a maximum of {pageSize} files')
         gdrive.find_duplicates()
-        print(
-            f'found {len(gdrive.duplicateslist)} duplicates\n batching duplicates...')
-        batches = gdrive.batch_duplicates()
-        print(f'batching done,{len(batches)} batches made')
-        for i,batch in enumerate(batches):
-            print(f'{len(batch)} files in batch {i}')
+        print(f'found {len(gdrive.duplicateslist)} duplicates')
         print('testing deletion...')
-        try:
-            gdrive.create_and_start_tasks(batches)
-        except Exception as e:
-            print('tests failed/n',e)
-            return
+        if gdrive.delete_duplicates():
+            print('tests failed in deleting method/n')
+            return 
         print('All tests passed ok')
+    @classmethod
+    def test_metadata(cls):
+        print('getting metadata')
+        results=[]
+        gdrive=Gdrive(testing=True)
+        ids=[]
+        files=Notes.query.all()
+        print(f'found {len(files)} files')
+        for file in files:
+            ids.append(file.gid)
+        if len(ids)==0:
+            return
+        for id in ids:
+            results.append(gdrive.get_metadata(id))
+        if len(results)>0:
+            print('tests passed ok')
+            print(f'file metadata recieved\n{results}')
+    
+    @classmethod
+    def runtests(cls):
+        print('run tests, choose option\n')
+        print('1:test getting file metadata')
+        print('2:test deleting duplicates\n')
+        x=int(input("choose:"))
+        if x==1:
+            Gdrive.test_metadata()
+        elif x==2:
+            Gdrive.test_delete_duplicates()
+        else:
+            print('invalid choice try again')
+            return
+            
+            

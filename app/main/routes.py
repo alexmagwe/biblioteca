@@ -17,13 +17,13 @@ def home():
         return render_template('home.html')
 @main.route('/drive/page/<int:page>',methods=[ 'GET','POST'])
 def drive(page):
-    pages=len(gdrive.files)
-    if len(gdrive.files)>0 and page<=pages:
+    if len(gdrive.files)>0 and page<=len(gdrive.files):
         files=gdrive.files[page]
     else:
         gdrive.get_files(30)
         files=gdrive.files
         files=files[page]
+    pages=len(gdrive.files)
     num_files=gdrive.get_num_files()
     return render_template('drive/drive.html',files=files,num=num_files,pages=pages)
 

@@ -23,8 +23,12 @@
     <ul class='list-unstyled'>
         {% for file in files%}
         <li class='flex-row'>
+            <img src={{file.iconLink}}>
             <span class='font-weight-bold'>{{file.name}}</span>
-            <span class="font-italic">{{file.id}}</span>
+            <a href={{file.webViewLink}}>view</a>
+            <a href={{file.webContentLink}}>download</a>
+            <span class="font-weight-light">{{file.size}}b</span>
+           
         </li>
     </ul>
     {%endfor%}
