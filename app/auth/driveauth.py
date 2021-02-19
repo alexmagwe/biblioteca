@@ -97,10 +97,11 @@ class Gdrive:
 
     def delete_duplicates(self):
         main_batch = self.batch_duplicates()
-        self.create_and_start_tasks(main_batch)
-        if len(self.failed) > 0:
-            return self.failed
-        return len(self.failed)  # returns how many files have failed to delete
+        try:
+            self.create_and_start_tasks(main_batch)
+        except Exception as e:
+            return e
+        return False # returns how many files have failed to delete
 
     def get_files(self, num=30):
         pageToken = None

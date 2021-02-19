@@ -43,9 +43,9 @@ def duplicates():
     num=len(duplicates)
     if request.method=='DELETE':
         # failed=gdrive.test_delete_duplicates()
-        failed=gdrive.delete_duplicates()
-        if failed>0:
-            return {'error':f'failed to delete {failed} files'}
+        res=gdrive.delete_duplicates()
+        if res:
+            return {'error':f'{e}'}
         else:return {'success':f'{num} duplicate files deleted succesfully'}
     return render_template('drive/duplicates.html',duplicates=duplicates,num=num)
 
