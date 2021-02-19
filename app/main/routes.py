@@ -4,7 +4,7 @@ from ..models import Units,Notes
 from ..filters import filter_extension,filter_semester,filter_year,filter_year_and_semester
 from . import main
 import os
-from ..auth.driveauth import Gdrive
+from ..auth.drivemanager import Gdrive
 
 gdrive=Gdrive()
 @main.route('/home')
@@ -45,7 +45,7 @@ def duplicates():
         # failed=gdrive.test_delete_duplicates()
         res=gdrive.delete_duplicates()
         if res:
-            return {'error':f'{e}'}
+            return {'error':f'{res}'}
         else:return {'success':f'{num} duplicate files deleted succesfully'}
     return render_template('drive/duplicates.html',duplicates=duplicates,num=num)
 

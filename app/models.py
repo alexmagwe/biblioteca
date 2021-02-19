@@ -152,6 +152,7 @@ class Notes(db.Model, Utilities):
     unit_id = db.Column(db.Integer, db.ForeignKey('units.id'), nullable=False)
     gid = db.Column(db.String(), unique=True, index=True)
     category = db.Column(db.String(20), default=Categories.DOCUMENT)
+    size=db.Column(db.String(),unique=True,index=True)
     date_uploaded = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):

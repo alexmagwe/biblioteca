@@ -5,7 +5,7 @@ from flask_migrate import Migrate,MigrateCommand
 from flask_script import Shell,Manager
 from flask import current_app
 from app.models import Users,Courses,Permissions,Units,Notes,AdminsList
-from app.auth.driveauth import Gdrive
+from app.auth.drivemanager import Gdrive
 manager=Manager(app)
 @app.shell_context_processor
 def make_shell_context():

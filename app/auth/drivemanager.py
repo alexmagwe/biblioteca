@@ -100,9 +100,10 @@ class Gdrive:
             self.delete_batch(self.duplicateslist)
         except Exception as error:
             return error
-        return False
-        
-    def get_metadata(self,file_id):
+        return False            
+    def get_metadata(self,file_id,options=None):
+        if options:#specific specific metadata to get
+            result = self.drive.files().get(fileId=file_id,fields=f"{options}").execute()
         result = self.drive.files().get(fileId=file_id,
         fields="name, size, webContentLink, webViewLink, iconLink, mimeType").execute()
         return result

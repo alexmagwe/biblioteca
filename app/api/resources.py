@@ -8,6 +8,7 @@ import sys
 from flask_restx import Resource, reqparse, fields
 import os
 import json
+from ..auth.drivemanager import Gdrive
 from ..models import Courses, Units, Users, Notes,Categories
 
 
@@ -158,6 +159,7 @@ class AddCourse(Resource):
 
 
 class AddNotes(Resource):
+    drive=Gdrive()
     @myapi.expect(uploadmodel)
     def post(self):
         data = request.json
@@ -169,8 +171,10 @@ class AddNotes(Resource):
                 for note in notes:
                     if find_file(note.get('name')):
                         continue
+                    gid=note.get('gid')
+                    metadata=drive.get_metadata(gid)#metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
                     file = Notes(name=note.get('name'), gid=note.get(
-                        'gid'), category=note.get('category'), unit_id=unit.id)
+                        'gid'), category=note.get('category'), unit_id=unit.id,size=int(metadata.get('size')))
                     db.session.add(file)
                 try:
                     db.session.commit()
