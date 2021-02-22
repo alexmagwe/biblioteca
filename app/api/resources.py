@@ -11,7 +11,7 @@ import json
 from ..auth.drivemanager import Gdrive
 from ..models import Courses, Units, Users, Notes,Categories
 
-# drive=Gdrive()
+drive=Gdrive()
 def find_user(em):
     user = Users.query.filter_by(email=em).first()
     return user
@@ -103,14 +103,14 @@ class UnitNotes(Resource):
                 for note in unit.notes:
                     # metadata=drive.get_metadata(note.gid)
                     if note.category==Categories.DOCUMENT:
-                        notes[Categories.DOCUMENT].append({**metadata,**note.to_json()})
+                        notes[Categories.DOCUMENT].append(note.to_json())
                     elif note.category==Categories.VIDEO:
-                        notes[Categories.VIDEO].append({**metadata,**note.to_json()})
+                        notes[Categories.VIDEO].append(note.to_json())
                     elif note.category==Categories.ASSIGNMENT:
-                        notes[Categories.ASSIGNMENT].append({**metadata,**note.to_json()})
+                        notes[Categories.ASSIGNMENT].append(note.to_json())
                     else:
-                        notes[Categories.DOCUMENT].append({**metadata,**note.to_json()})
-                print(notes)
+                        notes[Categories.DOCUMENT].append(note.to_json())
+                # print(notes)
                 return {"unit": unit.name, "code": unit.code, 'notes': notes}
             else:
                 return {'error': 'unit not found'}
