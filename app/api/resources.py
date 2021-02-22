@@ -101,15 +101,16 @@ class UnitNotes(Resource):
             if unit:
                 notes={Categories.DOCUMENT:[],Categories.VIDEO:[],Categories.ASSIGNMENT:[]}
                 for note in unit.notes:
-                    metadata=drive.get_metadata(note.gid)
-                    if note.category==Categories.DOCUMENT:
-                        notes[Categories.DOCUMENT].append({**metadata,**note.to_json()})
+                    if note.category==Categories.ASSIGNMENT or note.category==Categories.DOCUMENT:
+                        metadata=drive.get_metadata(note.gid)
+                        if note.category==Categories.DOCUMENT:
+                            notes[Categories.DOCUMENT].append({**metadata,**note.to_json()})
+                        elif note.category==Categories.ASSIGNMENT:
+                            notes[Categories.ASSIGNMENT].append({**metadata,**note.to_json()})
+                        else:
+                            notes[Categories.DOCUMENT].append({**metadata,**note.to_json()})
                     elif note.category==Categories.VIDEO:
-                        notes[Categories.VIDEO].append({**metadata,**note.to_json()})
-                    elif note.category==Categories.ASSIGNMENT:
-                        notes[Categories.ASSIGNMENT].append({**metadata,**note.to_json()})
-                    else:
-                        notes[Categories.DOCUMENT].append({**metadata,**note.to_json()})
+                        notes[Categories.VIDEO].append(note.to_json())
                 print(notes)
                 return {"unit": unit.name, "code": unit.code, 'notes': notes}
             else:
