@@ -11,7 +11,7 @@ import json
 from ..auth.drivemanager import Gdrive
 from ..models import Courses, Units, Users, Notes,Categories
 
-
+drive=Gdrive()
 def find_user(em):
     user = Users.query.filter_by(email=em).first()
     return user
@@ -101,15 +101,15 @@ class UnitNotes(Resource):
             if unit:
                 notes={Categories.DOCUMENT:[],Categories.VIDEO:[],Categories.ASSIGNMENT:[]}
                 for note in unit.notes:
-                    print(note.to_json())
+                    metadata=drive.get_metadata(note.gid)
                     if note.category==Categories.DOCUMENT:
-                        notes[Categories.DOCUMENT].append(note.to_json())
+                        notes[Categories.DOCUMENT].append({**metadata,**note.to_json()})
                     elif note.category==Categories.VIDEO:
-                        notes[Categories.VIDEO].append(note.to_json())
+                        notes[Categories.VIDEO].append({**metadata,**note.to_json()})
                     elif note.category==Categories.ASSIGNMENT:
-                        notes[Categories.ASSIGNMENT].append(note.to_json())
+                        notes[Categories.ASSIGNMENT].append({**metadata,**note.to_json()})
                     else:
-                        notes[Categories.DOCUMENT].append(note.to_json())
+                        notes[Categories.DOCUMENT].append({**metadata,**note.to_json()})
                 print(notes)
                 return {"unit": unit.name, "code": unit.code, 'notes': notes}
             else:
@@ -159,7 +159,6 @@ class AddCourse(Resource):
 
 
 class AddNotes(Resource):
-    drive=Gdrive()
     @myapi.expect(uploadmodel)
     def post(self):
         data = request.json
@@ -172,7 +171,7 @@ class AddNotes(Resource):
                     if find_file(note.get('name')):
                         continue
                     gid=note.get('gid')
-                    metadata=drive.get_metadata(gid)#metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
+                    metadata=drive.get_metadata(gid,'size')#metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
                     file = Notes(name=note.get('name'), gid=note.get(
                         'gid'), category=note.get('category'), unit_id=unit.id,size=int(metadata.get('size')))
                     db.session.add(file)
