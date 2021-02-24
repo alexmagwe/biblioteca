@@ -1,6 +1,7 @@
 {% extends 'layout.html' %} {%block content%}
 <div class="container">
     <h1 class="h1">drive folder</h1>
+    <h2>Storage used:{{storage}}/15000 mb </h2>
     <a class='nav-link' href='/reload_drive'>reload</a>
     <h3 class="h3">{{num}} files found</h3>
     {%if current_user.is_admin%}
@@ -22,12 +23,12 @@
 </div>
     <ul class='list-unstyled'>
         {% for file in files%}
-        <li class='flex-row'>
+        <li class='flex-row w-100 justify-content-around'>
             <img src={{file.iconLink}}>
             <span class='font-weight-bold'>{{file.name}}</span>
-            <a href={{file.webViewLink}}>view</a>
-            <a href={{file.webContentLink}}>download</a>
-            <span class="font-weight-light">{{file.size}}b</span>
+            <a target="_blank" href={{file.webViewLink}}>view</a>
+            <a target="_blank" href={{file.webContentLink}}>download</a>
+            <!-- <span class="font-weight-light">{{file.size}}b</span> -->
            
         </li>
     </ul>

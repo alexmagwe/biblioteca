@@ -23,9 +23,10 @@ def drive(page):
         gdrive.get_files(30)
         files=gdrive.files
         files=files[page]
+    storage=gdrive.calculate_storage()
     pages=len(gdrive.files)
     num_files=gdrive.get_num_files()
-    return render_template('drive/drive.html',files=files,num=num_files,pages=pages)
+    return render_template('drive/drive.html',files=files,num=num_files,storage=storage,pages=pages)
 
 @main.route('/reload_drive/',methods=[ 'GET'])
 def reload_drive():
