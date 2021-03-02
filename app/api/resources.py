@@ -30,8 +30,8 @@ def find_unit(code):
         return (None)
 
 
-def find_file(name):
-    exists = Notes.query.filter_by(name=name).first()
+def find_file(size):
+    exists = Notes.query.filter_by(size=int(size)).first()
     if exists:
         return True
     else:
@@ -168,10 +168,10 @@ class AddNotes(Resource):
             unit = find_unit(code)
             if unit and len(notes) > 0:
                 for note in notes:
-                    if find_file(note.get('name')):
-                        continue
                     gid=note.get('gid')
                     metadata=drive.get_metadata(gid,'size')#metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
+                    if find_file(metadata.get('size')):
+                        continue
                     file = Notes(name=note.get('name'), gid=note.get(
                         'gid'), category=note.get('category'), unit_id=unit.id,size=int(metadata.get('size')))
                     db.session.add(file)
@@ -302,8 +302,8 @@ class Exists(Resource):
     def post(self):
         data = request.json
         print(data)
-        if (name := data.get('name')):
-            res = find_file(name)
+        if (size := data.get('size')):
+            res = find_file(size)
             return res
         else:
             return{'error': 'name not in request'}, 400
