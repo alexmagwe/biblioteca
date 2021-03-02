@@ -31,7 +31,7 @@ def find_unit(code):
 
 
 def find_file(size):
-    exists = Notes.query.filter_by(size=int(size)).first()
+    exists = Notes.query.filter_by(size=size).first()
     if exists:
         return True
     else:
@@ -173,7 +173,7 @@ class AddNotes(Resource):
                     if find_file(metadata.get('size')):
                         continue
                     file = Notes(name=note.get('name'), gid=note.get(
-                        'gid'), category=note.get('category'), unit_id=unit.id,size=int(metadata.get('size')))
+                        'gid'), category=note.get('category'), unit_id=unit.id,size=metadata.get('size'))
                     db.session.add(file)
                 try:
                     db.session.commit()
