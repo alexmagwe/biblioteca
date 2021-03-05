@@ -15,7 +15,6 @@ class Development(Config):
     DB_SERVER='localhost'
     MAIL_SERVER='smtp.mailtrap.io'
     MAIL_PORT=2525
-    ADMINS=os.environ.get('ADMINS')
     MAIL_USE_TLS=True
     DEBUG=True
     MAIL_USE_SSL=False
@@ -31,9 +30,25 @@ class Production(Config):
     SECRET_KEY=os.environ.get('SECRET_KEY')
     MAIL_USERNAME= '18046de32e56fe'
     MAIL_PASSWORD= 'a0ad48ed8fb0a0'
-    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
-  
+    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')  
+class Testing(Config):
+    TESTING=True
+    envpath=os.path.abspath(os.path.dirname(__package__))
+    load_dotenv(os.path.join(envpath,'.env'))
+    SECRET_KEY=os.getenv('SECRET_KEY')
+    DB_SERVER='localhost'
+    MAIL_SERVER='smtp.mailtrap.io'
+    WTF_CSRF_ENABLED = False
+    MAIL_PORT=2525
+    MAIL_USE_TLS=True
+    DEBUG=True
+    MAIL_USE_SSL=False
+    MAIL_USERNAME= '18046de32e56fe'
+    MAIL_PASSWORD= 'a0ad48ed8fb0a0'
+    SQLALCHEMY_DATABASE_URI=os.getenv('TESTING_DATABASE_URL')
+
 configs={
     'development':Development,
-    'production':Production
-}
+    'production':Production,
+    'testing':Testing
+    }
