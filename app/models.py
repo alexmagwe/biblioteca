@@ -160,7 +160,13 @@ class Notes(db.Model, Utilities):
 
     def to_json(self):
         return {"id": self.id, "name": self.name, "gid": self.gid, "category": self.category}
-
+    def delete_file(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+            return True
+        except:
+            return False
 
 class AdminView(ModelView):
     def __init__(self, *kwargs):

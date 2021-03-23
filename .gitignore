@@ -19,3 +19,5 @@ google-credentials.json
 .env
 script.py
 unit*.json
+tmp
+.coverage

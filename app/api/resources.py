@@ -25,9 +25,9 @@ def find_course(code):
 def find_unit(code):
     unit = Units.query.filter_by(code=code).first()
     if unit:
-        return (unit)
+        return unit
     else:
-        return (None)
+        return None
 
 
 def find_file(size):
@@ -39,21 +39,18 @@ def find_file(size):
 
 # reason for passing code as a param even though its not used is for local server storage if its ever implemented
 
-
-def savefile(file, code='', toupload=False):
-    if toupload:
-        path = getuploadpath()
-        try:
-            path = os.path.join(path, file.filename)
-            file.save(path)
-            return {'path': path}
-            print('saved file')
-            print(path)
-        except Exception as e:
-            print(e)
-            return {'error': sys.exc_info()[0]}
-    return None
-    # create_new_path(unit)
+#this is not called anywhere
+# def savefile(file, code='', toupload=False):
+#     if toupload:#dont worry about what this means its probably a feature if we were using a local file database
+#         path = getuploadpath()
+#         try:
+#             path = os.path.join(path, file.filename)
+#             file.save(path)
+#             return {'path': path}
+#         except Exception as e:
+#             return {'error': sys.exc_info()[0]}
+#     return None
+#     # create_new_path(unit)
 
 
 def get_notes(course_code):
@@ -111,11 +108,11 @@ class UnitNotes(Resource):
                     else:
                         notes[Categories.DOCUMENT].append(note.to_json())
                 # print(notes)
-                return {"unit": unit.name, "code": unit.code, 'notes': notes}
+                return {"unit": unit.name, "code": unit.code, 'notes': notes},200
             else:
-                return {'error': 'unit not found'}
+                return {'error': 'unit not found'},404
         else:
-            return {'error': "invalid information recieved,expected json obj unit:unit code"}
+            return {'error': "invalid information recieved,expected json obj unit_code:string"},400
 
 
 class CourseNotes(Resource):
@@ -128,12 +125,12 @@ class CourseNotes(Resource):
             course_code = data
             notes = get_notes(course_code)
             if notes:
-                return notes
+                return notes,200
             else:
-                return {'error': 'no notes found'}
+                return {'error': 'no notes found'},200
                 # send_ notes request email implementation
         else:
-            return {'error': 'course name needed'}
+            return {'error': 'course name needed'},400
 
 
 class AddCourse(Resource):
@@ -179,7 +176,6 @@ class AddNotes(Resource):
                     db.session.commit()
                     # return {"success":"notes added succesfully"}
                 except Exception as e:
-                    print(e)
                     return {'error': sys.exc_info()[0]}, 500
             else:
                 return {'error': 'invalid unit'}, 400
