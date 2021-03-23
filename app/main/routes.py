@@ -89,7 +89,6 @@ def unit(id):
 @main.route('/delete/<gid>',methods=['GET'])
 def delete(gid):
     res=gdrive.delete_file(gid)
-    units=Units.query.all()
     if res.get('success'):
         res=Notes.query.filter_by(gid=gid).first().delete_file()
         if res:
@@ -99,7 +98,7 @@ def delete(gid):
             # return {'message':"failed to delete internal server error occured,try again later"}
     else:
         flash(str(res))
-    return redirect(url_for('main.units',units=units))
+    return redirect(url_for('main.units'))
     
 @main.route('/filter/units/',methods=['GET'])
 def filter_units():
