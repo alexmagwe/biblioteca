@@ -4,37 +4,8 @@
 <span class='vague-darker'>{{item.unit.code}}</span>
 <a class='units-list-items-count' target=_blank href='https://drive.google.com/file/d/{{item.gid}}/view'>view</a>
 <radio class='radio-item'></radio>
-<form id='delete-form'>
-    <button type='submit' class=' ml-2 btn btn-primary'>delete</button>
-</form>
-
+    <a href="{{url_for('main.delete',gid=item.gid)}}" class=' ml-2 btn btn-primary'>delete</a>
 </li>
-     <script>
-            const gid="{{item.gid}}"
-            const form=document.querySelector('#delete-form')
-            form.addEventListener('submit', e => {
-            e.preventDefault();
-            // const code = form.elements['course_code'].value;
-            fetch(`/delete/${gid}`,{
-                method:'DELETE',
-                headers:{
-                'Content-Type':'application/json',
-                },
-                body:JSON.stringify({'gid':gid})
-                    }
-                )
-                .then(resp => resp.json())
-                .then(data => {
-                    if (data.error) {
-                        alert(data['error'])
-                    } else {
-                        alert(data.message)
-                  
-                    }
-
-                })
-        })
-        </script>
 {%endmacro%}
 {%macro filter_form(case)%}
        <div class='extension_filter_form container-fluid'>

@@ -1,4 +1,4 @@
-from flask import url_for,render_template,current_app,redirect,request
+from flask import url_for,render_template,current_app,redirect,request,flash
 from flask_login import current_user
 from ..models import Units,Notes
 from ..filters import filter_extension,filter_semester,filter_year,filter_year_and_semester
@@ -86,17 +86,19 @@ def users():
 def unit(id):
     unit=Units.query.get(id)
     return render_template('unit/unit.html',unit=unit,notes=unit.notes)
-@main.route('/delete/<gid>',methods=['DELETE'])
+@main.route('/delete/<gid>',methods=['GET'])
 def delete(gid):
     res=gdrive.delete_file(gid)
+    units=Units.query.all()
     if res.get('success'):
         res=Notes.query.filter_by(gid=gid).first().delete_file()
         if res:
-            return {'message':'deleted successfully'}
+            flash('succesfully deleted','success')
         else:
-            return {'message':"failed to delete internal server error occured,try again later"}
+            flash('internal server error occured try again later','error')
+            # return {'message':"failed to delete internal server error occured,try again later"}
     else:
-        return res
+        flash(str(res))
     return redirect(url_for('main.units',units=units))
     
 @main.route('/filter/units/',methods=['GET'])
