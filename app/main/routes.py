@@ -86,7 +86,19 @@ def users():
 def unit(id):
     unit=Units.query.get(id)
     return render_template('unit/unit.html',unit=unit,notes=unit.notes)
-
+@main.route('/delete/<gid>',methods=['DELETE'])
+def delete(gid):
+    res=gdrive.delete_file(gid)
+    if res.get('success'):
+        res=Notes.query.filter_by(gid=gid).first().delete_file()
+        if res:
+            return {'message':'deleted successfully'}
+        else:
+            return {'message':"failed to delete internal server error occured,try again later"}
+    else:
+        return res
+    return redirect(url_for('main.units',units=units))
+    
 @main.route('/filter/units/',methods=['GET'])
 def filter_units():
     year,semester=request.args.get('year'),request.args.get('semester')
