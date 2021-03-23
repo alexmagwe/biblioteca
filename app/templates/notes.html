@@ -29,11 +29,14 @@
                     if (data['error']) {
                         console.log(data['error'])
                     } else {
-                        console.log(data)
-                        data.notes.forEach(el => {
+                        let {assignment,document,video}=data.notes
+                        const merged_data=[...assignment,...document,...video]
+                        console.log(merged_data)
+                        for(let i=0;i<merged_data.length;i++){
+                            let el=merged_data[i]
                             let item = document.createElement('li')
                             let view = document.createElement('a')
-
+                            $("<a></a>").html('View').appendTo("#myDiv");
                             
                             view.href = `https://drive.google.com/file/d/${el.gid}/view`
                             view.innerHTML = 'View'
@@ -44,9 +47,24 @@
                             item.appendChild(view)
                             list.appendChild(item)
 
+                        }
+                        // merged_data.forEach(el => {
+                        //     let item = document.createElement('li')
+                        //     let view = document.createElement('a')
+
+                            
+                        //     view.href = `https://drive.google.com/file/d/${el.gid}/view`
+                        //     view.innerHTML = 'View'
+                        //     view.target = '_blank'
+                        //     view.type = 'application/pdf'
+                        //     view.classList += 'view'
+                        //     item.innerHTML = el.name
+                        //     item.appendChild(view)
+                        //     list.appendChild(item)
 
 
-                        })
+
+                        // })
                     }
 
                 })

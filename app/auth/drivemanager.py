@@ -14,6 +14,7 @@ import math
 import requests
 import mimetypes
 import functools
+import sys
 
 
 SCOPES = ['https://www.googleapis.com/auth/drive.metadata',
@@ -52,15 +53,16 @@ class Gdrive:
         return total
 
     def find_duplicates(self):
+        #it generally finds all files not in the db but in google drive
         if len(self.files) == 0:
             self.get_files()
         sizeset = {}
-        remotegids=self.getremoteGIDS()
-        for file in self.total_files:
+        remotegids=self.getremoteGIDS()#get all file ids in database
+        for file in self.total_files:#go through all the files in google drive
             id = file.get('id')
             name = file.get('name')
             in_db = Notes.query.filter_by(gid=id).first()
-            if not id in remotegids:
+            if not id in remotegids:#if file not in database ,i dont care about it
                 self.duplicateslist.append(file)
         return self.duplicateslist
 
@@ -158,6 +160,15 @@ class Gdrive:
             if pageToken is None:
                 break
         return items
+    
+    def delete_file(self,id):
+        try:
+            self.drive.files().delete(fileId=id).execute()
+            return {'success':'deleted succesfully'}
+        except Exception as e:
+            return {'error':str(e)}
+            
+        
     def has_permissions(self,file_id):
         resp = self.drive.permissions().list(fileId=file_id,fields="*").execute()
         permissions=resp.get('permissions')
@@ -195,6 +206,7 @@ class Gdrive:
             print(f'failed to delete {self.failed} files due to permission errors')
         print('All tests passed ok')
         
+  
     @classmethod
     def test_metadata(cls):
         print('getting metadata')
