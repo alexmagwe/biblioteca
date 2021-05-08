@@ -3,6 +3,7 @@ from flask_login import current_user
 from ..models import Units,Notes
 from ..filters import filter_extension,filter_semester,filter_year,filter_year_and_semester
 from . import main
+from ..errorHandler import showError
 import os
 from ..auth.drivemanager import Gdrive
 
@@ -147,6 +148,14 @@ def filter_notes_ext():
         results=filter_extension(notes,ext)
     return render_template('data/notes.html',notes=results)
 
+@main.route("/search",methods=['POST'])
+def search():
+    query=request.get_json().get("query")
+
+    if not query:
+        return showError("Empty query")
+    results=gdrive.search(query)
+    return results
 
 @main.route('/upload_notes',methods=['GET'])
 def upload_notes():

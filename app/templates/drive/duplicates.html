@@ -7,6 +7,17 @@
           <button type='submit' class='btn btn-primary'>delete all duplicates</button>
       </form>
     </div>
+    <ul>
+        {%for item in duplicates%}
+        <li>{{item.name}}
+            <span>
+                <a target="_blank" href={{item.webViewLink}}>view</a>
+
+            </span>
+        </li>
+        <li></li>
+        {%endfor%}
+    </ul>
     <p id='result'></p>
 </div>
 <script>
@@ -24,7 +35,7 @@
                     if (data['error']) {
                         alert(data['error'])
                     } else {
-                            console.log(data)
+                            alert(data)
                             let item = document.createElement('span')
                             item.innerHTML = data['success']
                     }

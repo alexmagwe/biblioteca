@@ -66,6 +66,11 @@ class Gdrive:
                 self.duplicateslist.append(file)
         return self.duplicateslist
 
+    def search(self,query):
+        results=self.drive.files().list(q=f"fullText contains '{query}'").execute()
+        if results:
+            return results
+
     def batch_duplicates(self, batch_size=20):
         main_batch = self.duplicateslist
         no_of_batches = math.ceil(len(main_batch)/batch_size)

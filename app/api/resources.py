@@ -5,6 +5,7 @@ from .. import login_manager, db, getuploadpath
 from . import api, myapi
 import requests
 import sys
+from ..errorHandler import showError
 from flask_restx import Resource, reqparse, fields
 import os
 import json
@@ -73,6 +74,8 @@ parser.add_argument('course_code', type=str, help='course name required')
 unitparser = reqparse.RequestParser()
 unitparser.add_argument('unit_code', type=str, help='unit code required')
 
+searchparser = reqparse.RequestParser()
+searchparser.add_argument("query",type=str,help='search query required')
 acmodel = myapi.model(
     'AddCourse', {'course_name': fields.String, 'course_code': fields.String})
 cdmodel = myapi.model('CourseDetails', {'email': fields.String})
@@ -86,7 +89,18 @@ existsmodel = myapi.model('Exists', {'name': fields.String})
 notefield = myapi.model('', {'name': fields.String, 'gid': fields.String})
 uploadmodel = myapi.model('AddNotes', {'notes': fields.List(
     fields.Nested(notefield)), 'unit_code': fields.String})
+searchmodel=myapi.model('Search',{"query":fields.String})
 
+class Search(Resource):
+    @myapi.expect(searchmodel)
+    @myapi.doc(body=searchmodel)
+    def post(self):
+        data=searchparser.parse_args()
+        if (query:=data.get("query")):
+            res=drive.search(query)
+            return res
+        else:
+            return showError('empty query'),406
 
 class UnitNotes(Resource):
     @myapi.expect(unmodel)

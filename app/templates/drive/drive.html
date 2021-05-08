@@ -11,16 +11,21 @@
         </li>
     </div>
     {%endif%}
-<div class='bg-dark'>
+    <!-- <div class='pd-4 container'>  nnnn
+        <form id='search-form' method='post'>
+            <input type='text' id="search-query" name='query'>
+        </form>
+    </div> -->
+    <div class='bg-dark'>
 
-    <ul class="pagination text-center">
-        {%for page in range(1,pages)%}
-        <li class="mr-3">
-            <a class='card-link text-light' href="{{url_for('main.drive',page=page)}}">{{page}}</a>
-        </li>
-        {%endfor%}
-    </ul>
-</div>
+        <ul class="pagination text-center">
+            {%for page in range(1,pages)%}
+            <li class="mr-3">
+                <a class='card-link text-light' href="{{url_for('main.drive',page=page)}}">{{page}}</a>
+            </li>
+            {%endfor%}
+        </ul>
+    </div>
     <ul class='list-unstyled'>
         {% for file in files%}
         <li class='flex-row w-100 justify-content-around'>
@@ -28,10 +33,43 @@
             <span class='font-weight-bold'>{{file.name}}</span>
             <a target="_blank" href={{file.webViewLink}}>view</a>
             <a target="_blank" href={{file.webContentLink}}>download</a>
+            <a target="_blank" href={{file.thumbnail}}>preview</a>
+
             <!-- <span class="font-weight-light">{{file.size}}b</span> -->
-           
+
         </li>
     </ul>
     {%endfor%}
 </div>
+<script>
+//     window.addEventListener('load', () => {
+//         let form = document.querySelector('#search-form');
+//         let searchInput = document.querySelector('#search-query');
+
+
+//         form.addEventListener('submit', e => {
+//             e.preventDefault();
+//             let query = searchInput.value
+//             console.log('searching  ' + query)
+//             fetch('/search', {
+//                     method: 'POST',
+//                     headers: {
+//                         "Content-Type": "application/json"
+//                     },
+//                     body: JSON.stringify({
+//                         query: query
+//                     }),
+//                 })
+//                 .then(resp => resp.json())
+//                 .then(data => {
+//                     if (data['error']) {
+//                         alert(data['error'])
+//                     } else {
+//                         console.log(data)
+//                     }
+
+//                 })
+//         })
+//     })
+// </script>
 {%endblock%}
