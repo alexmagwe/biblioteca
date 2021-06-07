@@ -179,14 +179,19 @@ class AddContent(Resource):
             if unit and len(files) > 0:
                 for f in files:
                     gid=f.get('gid')
-                    try:
-                        metadata=drive.get_metadata(gid,'size')#metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
-                    except:
-                        continue
-                    if find_file(metadata.get('size')):
-                        continue
-                    fil = Notes(name=f.get('name'), gid=f.get(
-                        'gid'), category=f.get('category'), unit_id=unit.id,size=metadata.get('size'))
+                    if f.get("category")!=Categories.VIDEO:
+                        try:
+                            metadata=drive.get_metadata(gid,'size')#metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
+                        except:
+                            continue
+                        if find_file(metadata.get('size')):
+                            continue
+                        fil = Notes(name=f.get('name'), gid=f.get(
+                            'gid'), category=f.get('category'), unit_id=unit.id,size=metadata.get('size'))
+                    else:
+                        fil = Notes(name=f.get('name'), gid=f.get(
+                            'gid'), category=f.get('category'), unit_id=unit.id)
+
                     db.session.add(fil)
                 try:
                     db.session.commit()
