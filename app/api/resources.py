@@ -111,7 +111,7 @@ class UnitNotes(Resource):
             unit = find_unit(code)
             if unit:
                 notes={Categories.DOCUMENT:[],Categories.VIDEO:[],Categories.ASSIGNMENT:[]}
-                for note in unit.notes:
+                for note in unit.notes.order_by(Notes.name):
                     # metadata=drive.get_metadata(note.gid)
                     if note.category==Categories.DOCUMENT:
                         notes[Categories.DOCUMENT].append(note.to_json())

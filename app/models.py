@@ -116,13 +116,13 @@ class Units(db.Model, Utilities):
                    primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), unique=True, index=True, nullable=False)
     code = db.Column(db.String(10), unique=True, index=True)
-    notes = db.relationship('Notes', backref='unit', lazy=True)
+    notes = db.relationship('Notes', backref='unit', lazy="dynamic")
     semester = db.Column(db.String(10), index=True)
     year = db.Column(db.Integer, index=True)
     courses_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
 
     def __repr__(self):
-        return f'id:{self.id},unit:{self.code},year:{self.year},semester:{self.semester},no of notes:{len(self.notes)}'
+        return f'id:{self.id},unit:{self.code},year:{self.year},semester:{self.semester},no of notes:{len(self.notes.all())}'
 
     def to_json(self):
         return {'code': self.code, 'name': self.name, 'year': self.year, 'semester': self.semester}
