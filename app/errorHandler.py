@@ -1,2 +1,6 @@
-def showError(msg):
-    return {"error":msg}
+def sendError(msg):
+    return {"message":msg,"type":"error"}
+def sendSuccess(msg):
+    return {"message":msg,"type":"success"}
+def sendWarning(msg):
+    return {"message":msg,"type":"warning"}

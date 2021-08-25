@@ -25,22 +25,29 @@ class TestPermissions(unittest.TestCase):
     def test_normal_user(self):
         user=Users.query.filter_by(email='random@gmail.com').first()
         
-        self.assertFalse(user.can(Permissions.ADDNOTES))
-        self.assertFalse(user.can(Permissions.ADMIN))
-        self.assertTrue(user.can(Permissions.MYNOTES))
+        self.assertFalse(user.can(Permissions.roles["SUPER_ADMIN"]))
+        self.assertFalse(user.can(Permissions.roles["ADMIN"]))
+        self.assertFalse(user.can(Permissions.roles["LECTURER"]))
+        self.assertFalse(user.can(Permissions.roles["MODERATOR"]))
+        self.assertTrue(user.can(Permissions.roles["USER"]))
         
     def test_anonymous_user(self):
         user=AnonymousUser()
-        self.assertFalse(user.can(Permissions.ADDNOTES))
-        self.assertFalse(user.can(Permissions.ADMIN))
-        self.assertFalse(user.can(Permissions.MYNOTES))
+        self.assertFalse(user.can(Permissions.roles["SUPER_ADMIN"]))
+        self.assertFalse(user.can(Permissions.roles["ADMIN"]))
+        self.assertFalse(user.can(Permissions.roles["LECTURER"]))
+        self.assertFalse(user.can(Permissions.roles["MODERATOR"]))
+        self.assertFalse(user.can(Permissions.roles["USER"]))
         
     def test_admin(self):
         user=Users.query.filter_by(email=os.environ.get('SUPER')).first()
-        self.assertTrue(user.can(Permissions.ADDNOTES))
-        self.assertTrue(user.can(Permissions.ADMIN))
-        self.assertTrue(user.can(Permissions.MYNOTES))
-
+        self.assertTrue(user.can(Permissions.roles["SUPER_ADMIN"]))
+        self.assertTrue(user.can(Permissions.roles["ADMIN"]))
+        self.assertTrue(user.can(Permissions.roles["LECTURER"]))
+        self.assertTrue(user.can(Permissions.roles["MODERATOR"]))
+        self.assertTrue(user.can(Permissions.roles["USER"]))
+        
+        
         # resp=self.client.get(url_for('api.'))
         
         

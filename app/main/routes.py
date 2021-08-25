@@ -3,7 +3,7 @@ from flask_login import current_user
 from ..models import Units,Notes
 from ..filters import filter_extension,filter_semester,filter_year,filter_year_and_semester
 from . import main
-from ..errorHandler import showError
+from ..errorHandler import sendError
 import os
 from ..auth.drivemanager import Gdrive
 
@@ -153,7 +153,7 @@ def search():
     query=request.get_json().get("query")
 
     if not query:
-        return showError("Empty query")
+        return sendError("Empty query")
     results=gdrive.search(query)
     return results
 
