@@ -4,3 +4,4 @@ def sendSuccess(msg):
     return {"message":msg,"type":"success"}
 def sendWarning(msg):
     return {"message":msg,"type":"warning"}
+

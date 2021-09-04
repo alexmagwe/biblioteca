@@ -67,12 +67,7 @@ class ApiTestCase(unittest.TestCase):
         response=self.client.post(url,json={"unit_code":"SPH207"})
         self.assertEqual(response.status_code,200)
         
-    def test_get_course_details(self):
-        url='/api/course/details'
-        response=self.client.post(url,json={"email":"some@example.com"})
-        self.assertEqual(response.status_code,200)
-        response=self.client.post(url,json={"email":self.test_email})
-        self.assertEqual(response.status_code,200)
+    
     
     def test_add_video_content(self):
         url='/api/add/content'

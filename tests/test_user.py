@@ -2,18 +2,22 @@ import unittest,os
 from app.models import Users,Permissions,AnonymousUser,Courses,Units,Notes,AdminsList
 from flask import current_app
 from app import create_app,db
+from app.auth import decode_auth_token,create_auth_token
 
 class TestPermissions(unittest.TestCase):
     def setUp(self):
+        self.password='random'
         self.app=create_app('testing')
         self.app_context=self.app.app_context()
         self.app_context.push()
         db.create_all()
+        self.client=self.app.test_client(use_cookies=True)
         self.admin=AdminsList(email=os.environ.get('SUPER'))
         db.session.add(self.admin)
         db.session.commit()
-        self.superuser=Users(email=os.environ.get('SUPER'),password='random')
-        self.normaluser=Users(email='random@gmail.com',password='random')
+        self.superuser=Users(email=os.environ.get('SUPER'),password=self.password)
+        self.normaluser=Users(email='random@gmail.com',password=self.password)
+        self.normaluser.set_password(self.password)
         db.session.add(self.normaluser)
         db.session.add(self.superuser)
         db.session.commit()
@@ -46,8 +50,70 @@ class TestPermissions(unittest.TestCase):
         self.assertTrue(user.can(Permissions.roles["LECTURER"]))
         self.assertTrue(user.can(Permissions.roles["MODERATOR"]))
         self.assertTrue(user.can(Permissions.roles["USER"]))
-        
-        
+    def test_encode_auth_token(self):
+        user = Users(
+            email='test@test.com',
+            password='test'
+        )
+        db.session.add(user)
+        db.session.commit()
+        token = create_auth_token(user.to_json())
+        self.assertTrue(isinstance(token, str))
         # resp=self.client.get(url_for('api.'))
+
+    def test_decode_auth_token(self):
+        user = Users(
+            email='test@test.com',
+            password='test'
+        )
+        db.session.add(user)
+        db.session.commit()
+        auth_token = create_auth_token(user.to_json())
+        self.assertTrue(isinstance(decode_auth_token(auth_token),dict))
+
+    def test_registration(self):
+        with self.client:
+            response = self.client.post(
+                '/api/signup',
+                json={
+                    'email':'joe@gmail.com',
+                    'username':'joe',
+                    'password':'123456'
+                }
+            )
+            data=response.json
+            self.assertTrue(data['type'] == 'success')
+            self.assertTrue(isinstance(data['message'],str))
+            self.assertTrue((data['data'],str))
+            self.assertEqual(data['status'], 201)
+    def test_login(self):
+        with self.client:
+            response = self.client.post(
+                '/api/login',
+                json={
+                    'email':self.normaluser.email,
+                    'password':self.password
+                }
+            )
+            data=response.json
+            self.assertTrue(data['type'] == 'success')
+            self.assertTrue(isinstance(data['message'],str))
+            self.assertTrue((data['data'],str))
+            self.assertEqual(data['status'], 201)
+            
+        with self.client:
+            response = self.client.post(
+                '/api/login',
+                json={
+                    'email':self.normaluser.email,
+                    'password':'wrongpassword'
+                }
+            )
+            data=response.json
+            self.assertTrue(data['type'] == 'error')
+            self.assertTrue(isinstance(data['message'],str))
+            self.assertTrue((data.get('data'),None))
+
+
         
         
