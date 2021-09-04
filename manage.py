@@ -4,12 +4,12 @@ from run import app
 from flask_migrate import Migrate,MigrateCommand
 from flask_script import Shell,Manager
 from flask import current_app
-from app.models import Users,Courses,Permissions,Units,Notes,AdminsList
+from app.models import Users,Courses,Permissions,Units,Notes,AdminsList,Utilities,RoleReviewList
 from app.auth.drivemanager import Gdrive
 manager=Manager(app)
 @app.shell_context_processor
 def make_shell_context():
-    return {'db':db,'Users':Users,'Courses':Courses,'AdminsList':AdminsList,'Permissions':Permissions,'Notes':Notes,'Units':Units,'Gdrive':Gdrive}
+    return {'db':db,'Users':Users,'Courses':Courses,'AdminsList':AdminsList,'Permissions':Permissions,'Notes':Notes,'Units':Units,'Gdrive':Gdrive,'Utilities':Utilities,'RoleReviewList':RoleReviewList}
 manager.add_command('shell',Shell(make_context=make_shell_context))
 manager.add_command('db',MigrateCommand)
 

@@ -5,14 +5,20 @@ from .. import login_manager, db, getuploadpath
 from . import api, myapi
 import requests
 import sys
-from ..errorHandler import showError
+from ..errorHandler import sendError, sendSuccess, sendWarning
 from flask_restx import Resource, reqparse, fields
 import os
 import json
+from sqlalchemy import exc
+import jwt
 from ..auth.drivemanager import Gdrive
-from ..models import Courses, Units, Users, Notes,Categories
+from ..auth import decode_auth_token, create_auth_token
+from ..decorators import token_required
+from ..models import Courses, Units, Users, Notes, Categories, RoleReviewList, Permissions
 
-drive=Gdrive()
+drive = Gdrive()
+
+
 def find_user(em):
     user = Users.query.filter_by(email=em).first()
     return user
@@ -40,7 +46,7 @@ def find_file(size):
 
 # reason for passing code as a param even though its not used is for local server storage if its ever implemented
 
-#this is not called anywhere
+# this is not called anywhere
 # def savefile(file, code='', toupload=False):
 #     if toupload:#dont worry about what this means its probably a feature if we were using a local file database
 #         path = getuploadpath()
@@ -75,33 +81,63 @@ unitparser = reqparse.RequestParser()
 unitparser.add_argument('unit_code', type=str, help='unit code required')
 
 searchparser = reqparse.RequestParser()
-searchparser.add_argument("query",type=str,help='search query required')
+searchparser.add_argument("query", type=str, help='search query required')
+#add course model
 acmodel = myapi.model(
     'AddCourse', {'course_name': fields.String, 'course_code': fields.String})
-cdmodel = myapi.model('CourseDetails', {'email': fields.String})
+#add user detaisl model
 amcmodel = myapi.model(
-    'AddMyCourse', {'email': fields.String, "course_code": fields.String})
+    'AddUserDetails', {'course_code': fields.String, 'year': fields.String, 'semester': fields.String})
 cnmodel = myapi.model('CourseNotes', {"course_code": fields.String})
-aumodel = myapi.model('AddUnit', {"course_code": fields.String, "name": fields.String,
-                                  "semester": fields.String, "unit_code": fields.String, 'year': fields.Integer})
+
+
+# add_unit_model = myapi.model('AddUnits', {"units": fields.List(fields.Nested(unitfields))})
+#unit notes model
 unmodel = myapi.model('UnitNotes', {"unit_code": fields.String})
 existsmodel = myapi.model('Exists', {"name": fields.String})
-notefield = myapi.model('', {"name": fields.String, "gid": fields.String,"category":fields.String})
-uploadmodel = myapi.model('AddContent', { "unit_code": fields.String,"files": fields.List(
+unitfields = myapi.model(
+    'unitmodel', {"name": fields.String, "course_code": fields.String, "year": fields.Integer, "semester": fields.Integer, "code": fields.String})
+#filter units model
+fumodel = myapi.model(
+    'FilterUnits', {"course_code": fields.String, "year": fields.Integer, "semester": fields.String,})
+
+add_unit_model = myapi.model(
+    'AddUnits', {"units": fields.List(fields.Nested(unitfields))})
+notefield = myapi.model(
+    'addcontent', {"name": fields.String, "gid": fields.String, "category": fields.String})
+uploadmodel = myapi.model('AddContent', {"unit_code": fields.String, "files": fields.List(
     fields.Nested(notefield))})
-searchmodel=myapi.model('Search',{"query":fields.String})
+searchmodel = myapi.model('Search', {"query": fields.String})
+
+
+class Roles(Resource):
+    def get(self):
+        return sendSuccess(Permissions.roles)
+
 
 class Search(Resource):
     @myapi.expect(searchmodel)
     @myapi.doc(body=searchmodel)
     def post(self):
-        data=searchparser.parse_args()
-        if (query:=data.get("query")):
-            res=drive.search(query)
-            return res
+        data = searchparser.parse_args()
+        if (query := data.get("query")):
+            res = drive.search(query)
+            return sendSuccess(res)
         else:
-            return showError('empty query'),406
-
+            return sendError('empty query')
+class FilterUnits(Resource):
+    @myapi.expect(fumodel)
+    def post(self):
+        data=request.json
+        year=data.get('year')
+        semester=data.get('semester')
+        course_code=data.get('course_code')
+        if year and semester and course_code:
+            course=find_course(course_code)
+            if course:
+                units=Units.query.filter_by(year=year,semester=semester,courses_id=course.id).all()
+                return {"units":[unit.to_json() for unit in units]}
+        return ('Please provide the required information'),400
 class UnitNotes(Resource):
     @myapi.expect(unmodel)
     @myapi.doc(body=unmodel)
@@ -110,23 +146,23 @@ class UnitNotes(Resource):
         if(code := data.get('unit_code')):
             unit = find_unit(code)
             if unit:
-                notes={Categories.DOCUMENT:[],Categories.VIDEO:[],Categories.ASSIGNMENT:[]}
+                notes = {Categories.DOCUMENT: [],
+                         Categories.VIDEO: [], Categories.ASSIGNMENT: []}
                 for note in unit.notes.order_by(Notes.name):
                     # metadata=drive.get_metadata(note.gid)
-                    if note.category==Categories.DOCUMENT:
+                    if note.category == Categories.DOCUMENT:
                         notes[Categories.DOCUMENT].append(note.to_json())
-                    elif note.category==Categories.VIDEO:
+                    elif note.category == Categories.VIDEO:
                         notes[Categories.VIDEO].append(note.to_json())
-                    elif note.category==Categories.ASSIGNMENT:
+                    elif note.category == Categories.ASSIGNMENT:
                         notes[Categories.ASSIGNMENT].append(note.to_json())
                     else:
                         notes[Categories.DOCUMENT].append(note.to_json())
-                # print(notes)
-                return {"unit": unit.name, "code": unit.code, 'notes': notes},200
+                return sendSuccess({"unit": unit.name, "code": unit.code, 'notes': notes})
             else:
-                return {'error': 'unit not found'},404
+                return sendError('that unit doesn\'t exist or is not available yet')
         else:
-            return {'error': "invalid information recieved,expected json obj unit_code:string"},400
+            return sendError("invalid information recieved,expected json obj unit_code:string"), 400
 
 
 class CourseNotes(Resource):
@@ -139,38 +175,41 @@ class CourseNotes(Resource):
             course_code = data
             notes = get_notes(course_code)
             if notes:
-                return notes,200
+                return sendSuccess(notes), 200
             else:
-                return {'error': 'no notes found'},200
+                return sendError('no notes found')
                 # send_ notes request email implementation
         else:
-            return {'error': 'course name needed'},400
+            return sendError('course name needed'), 400
 
 
 class AddCourse(Resource):
     @myapi.expect(acmodel)
     def post(self):
         data = request.json
-        course_code = data.get('course_code')
-        course_name = data.get('course_name')
-        if course_name and course_code:
-            course = find_course(course_code)
-            if course:
-                return {'message': 'course already exists'}
-            else:
-                c = Courses(name=course_name, code=course_code)
-                res = c.add()
-                if res:
-                    return {'success': 'course added'}
-                else:
-                    return showError('could not create course,try again later')
-        else:
-            return showError('invalid course information in request expected json obj {course name:string}')
+        if (courses:=data.get('courses')):
+            for course in data.get('courses'):
+                course_code = course.get('course_code')
+                course_name = course.get('course_name')
+                if course_name and course_code:
+                    course = find_course(course_code)
+                    if course:
+                        continue
+                    else:
+                        c = Courses(name=course_name, code=course_code)
+                        db.session.add(c)
+            try:
+                db.session.commit()
+                return sendSuccess('Courses added successfully')
+            except:
+                return sendError('Could not add courses,try again later')
+        return sendError('invalid course information, expected json obj'),400
 
 
 class AddContent(Resource):
     @myapi.expect(uploadmodel)
     def post(self):
+        count = 0
         data = request.json
         files = data.get('files')
         code = data.get('unit_code')
@@ -178,101 +217,81 @@ class AddContent(Resource):
             unit = find_unit(code)
             if unit and len(files) > 0:
                 for f in files:
-                    gid=f.get('gid')
-                    if f.get("category")!=Categories.VIDEO:
+                    gid = f.get('gid')
+                    if f.get("category") != Categories.VIDEO:
                         try:
-                            metadata=drive.get_metadata(gid,'size')#metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
+                            # metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
+                            metadata = drive.get_metadata(gid, 'size')
                         except:
                             continue
                         if find_file(metadata.get('size')):
                             continue
                         fil = Notes(name=f.get('name'), gid=f.get(
-                            'gid'), category=f.get('category'), unit_id=unit.id,size=metadata.get('size'))
+                            'gid'), category=f.get('category'), unit_id=unit.id, size=metadata.get('size'))
                     else:
                         fil = Notes(name=f.get('name'), gid=f.get(
                             'gid'), category=f.get('category'), unit_id=unit.id)
+                    count += 1
 
                     db.session.add(fil)
                 try:
-                    db.session.commit()
+                    if count > 0:
+                        db.session.commit()
                     # return {"success":"notes added succesfully"}
+                    else:
+                        return sendWarning("the uploaded files already exist")
                 except Exception as e:
-                    return {'error': sys.exc_info()[0]}, 500
+                    raise e
+                    return sendError(sys.exc_info()[0]), 500
             else:
-                return showError('invalid unit'), 400
+                return sendError('invalid unit')
         else:
-            return showError('unit code not found'), 400
-        return {'success': 'files added sucesfully'}, 201
+            return sendError('unit code not found')
+        return sendSuccess('files added sucesfully'), 201
 
 
-class AddMyCourse(Resource):
+class AddUserDetails(Resource):
     @myapi.expect(amcmodel)
+    @token_required
     def post(self):
-        data = request.json
-        if data.get('email') and data.get('course_code'):
-            email = data['email']
-            user = find_user(email)
-            course_code = data.get('course_code')
-            if not user:
-                return showError('user not found')
+        details = request.json
+        user = find_user(request.user['email'])
+        if not user:
+            return sendError('if you see this message,something went horribly wrong,please contact me 0796914452')
+        if (name := details.get('username')):
+            user.username = name
+        if(year := details.get('year')):
+            user.year = year
+        if(semester := details.get('semester')):
+            user.semester = semester
+        if (course_code := details.get('course_code')):
             course = find_course(course_code)
-            if user and course and not user.course:
+            if course:
                 user.course_id = course.id
-                try:
-                    db.session.commit()
-                except:
-                    db.session.rollback()
-                return {'name': user.course.name, 'code': course.code},201
-            elif user.course:
-                return {'name': user.course.name, 'code': user.course.code}
-        else:
-            return {'error': 'missing email or course code'}
-    #update course
-    def put(self):
-        data = request.json
-        if data.get('email') and data.get('course_code'):
-            email = data['email']
-            user = find_user(email)
-            course_code = data.get('course_code')
-            if not user:
-                user = Users(email=em)
-                res = user.add()
-            course = find_course(course_code)
-
-            user.course_id = course.id
-            try:
-                db.session.commit()
-            except:
-                db.session.rollback()
-            return {'name': user.course.name, 'code': course.code}
-        else:
-            return {'error': 'missing email or course code'}
+        try:
+            db.session.commit()
+            return user.to_json()
+        except exc.IntegrityError:
+            return sendError('Username already in use.')
 
 
-# get details of the student course,you supply the email
-class CourseDetails(Resource):
-    @myapi.expect(cdmodel)
+
+
+# get details of the user course,user gotten from token
+
+class UserDetails(Resource):
+    @token_required
     def post(self):
-        data = request.json
-        if data:
-            em=data.get('email')
+        # token = request.headers.get('Authorization')
+        if (data := request.user):
+            em = data.get('email')
             user = find_user(em)
-            if user and (course := user.course):
-                # session['user']=user
-                return {'name': course.name, 'code': course.code}
-            elif not user:
-                user = Users(email=em)
-                res = user.add()
-                if not res:
-                    return showError('user could not be created'),503
-                # session['user']=user
-                return {'course_name': None}, 201
-            else:
-                return {'course_name': None}, 404
-
-    # if the user course is not set or for some reason its not found empty string will be returned
+            if not user:
+                return sendError('User not found, Please signin/signup.')
+            return sendSuccess(user.to_json())
+    # if the user course is not set or for some reason its not found, empty string will be returned
         else:
-            return {'error': "email not provided"},400
+            return sendError("email not provided"),400
 
 
 class AllCourses(Resource):
@@ -309,45 +328,81 @@ class GetUnits(Resource):
                     return [unit.to_json() for unit in course.units]
 
             else:
-                return {'error': 'course unavailable'}, 404
+                return sendError('course unavailable')
         else:
-            return {'error': 'course name not provided'}, 400
+            return sendError('course name not provided'), 400
+
 
 class Exists(Resource):
     @myapi.expect(existsmodel)
     def post(self):
         data = request.json
-        print(data)
         if (size := data.get('size')):
             res = find_file(size)
             return res
         else:
-            return{'error': 'name not in request'}, 400
+            return sendError('name not in request'), 400
 
 
-class AddUnit(Resource):
-    @myapi.expect(aumodel)
+# class AddUnit(Resource):
+#     @myapi.doc(body=add_unit_model)
+#     @myapi.expect(add_unit_model)
+#     def post(self):
+#         failed = []
+#         data = request.json
+#         if (units := data.get('units')):
+#             if len(units) > 0:
+#                 for unit in units:
+#                     course = find_course(unit.get('course_code'))
+#                     exists = find_unit(unit.get('unit_code'))
+#                     if exists:
+#                         continue
+#                     if not course:
+#                         failed.append(unit)
+#                         continue
+
+#                     u = Units(name=unit.get('name'), code=unit.get('unit_code'), semester=unit.get(
+#                         'semester'), year=unit.get('year'), courses_id=course.id)
+#                     db.session.add(u)
+#         else:
+#             return sendError("no units provided to add"), 400
+#         try:
+#             db.session.commit()
+#             if len(failed) > 0:
+#                 return sendError(f"the course information provided for the following units is invalid:{failed}")
+#             return sendSuccess("units added succesfully")
+#         except:
+#             db.session.rollback()
+class AddUnits(Resource):
+    @myapi.doc(body=add_unit_model)
+    @myapi.expect(add_unit_model)
     def post(self):
-        print(request.json)
+        failed = []
+        count = 0
         data = request.json
-        if data.get('course_code') and data.get('name') and data.get('unit_code') and data.get('semester') and data.get('year'):
-            unit = find_unit(data.get('unit_code'))
+        if (units := data.get('units')):
+            if len(units) > 0:
+                for unit in units:
+                    course = find_course(unit.get('course_code'))
+                    exists = find_unit(unit.get('code'))
+                    if not course:
+                        failed.append(unit.get("name"))
+                        continue
+                    if exists:
+                        continue
+                    u = Units(name=unit.get('name'), code=unit.get('code'), semester=unit.get(
+                        'semester'), year=unit.get('year'), courses_id=course.id)
+                    count += 1
+                    db.session.add(u)
+                try:
+                    if count > 0:
+                        db.session.commit()
 
-            course = find_course(data.get('course_code'))
-            print(course)
-            if unit:
-                return
-            elif not unit and course:
-                u = Units(name=data.get('name'), code=data.get('unit_code'), semester=data.get(
-                    'semester'), year=data.get('year'), courses_id=course.id)
-                res = u.add()
-                if res:
-                    return {'message': 'added sucessfully'},201
-                else:
-                    return {'error': 'try again later'}, 500
-            elif not unit and not course:
-                return {'error': f"{data.get('course_name')} not found"}, 400
-            else:
-                return
+                    if len(failed) > 0:
+                        return sendError(f"the course code provided for the following units is invalid:{failed}")
+                    return sendSuccess("units added succesfully")
+                except Exception as e:
+                    db.session.rollback()
+                    return sendError("server error,please check the information provided"), 500
         else:
-            return {'error': 'missing information'}, 500
+            return sendError("no units provided to add"), 400
