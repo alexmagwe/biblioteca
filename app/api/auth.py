@@ -51,11 +51,10 @@ class Login(Resource):
                 else:    
                     if password:
                         if user.verify_password(password):
-                            #if(token:=create_auth_token(user.to_json())):
-                             #   return jsonify(data=token,type="success",status=201,message="Signin successful")
-                            return user.to_json()
+                            if(token:=create_auth_token(user.to_json())):
+                                return jsonify(data=token,type="success",status=201,message="Signin successful")
                         else:
-                            return sendError('Invalid Email/Password')
+                            return sendError('Invalid Email/Password'),401
         else:
             return sendError('Missing Information'),400
 
