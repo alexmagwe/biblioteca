@@ -47,7 +47,7 @@ class Login(Resource):
             if email:
                 user=find_user(email)
                 if not user:
-                    return sendError('User not found, Please create an account.')
+                    return sendError('User not found, Please create an account.'),401
                 else:    
                     if password:
                         if user.verify_password(password):
