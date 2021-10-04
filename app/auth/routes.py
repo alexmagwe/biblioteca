@@ -40,16 +40,14 @@ def callback():
         u=Users(email=user_data['email'])
         res=u.add()
         if res:
-            n=Users.query.filter_by(email=user_data['email']).first()
-            login_user(n)
-    elif user_data['email']==os.environ.get('SUPER') and not admin or user:
+            login_user(u)
+    elif user_data['email']==os.environ.get('SUPER') and not admin and not user:
         a=AdminsList(email=user_data['email'])
         a.add()
         u=Users(email=user_data['email'])
         res=u.add()
         if res:
-            n=Users.query.filter_by(email=user_data['email']).first()
-            login_user(n)
+            login_user(u)
     else:
         abort(403,'Unauthorized access')
     return redirect(url_for('api.home'))
