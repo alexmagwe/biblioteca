@@ -52,7 +52,7 @@ class Login(Resource):
                     if password:
                         if user.verify_password(password):
                             if(token:=create_auth_token(user.to_json())):
-                                return jsonify(data=token,type="success",status=201,message="Signin successful")
+                                return jsonify(token=token,type="success",status=201,message="Signin successful")
                         else:
                             return sendError('Invalid Email/Password'),401
         else:
