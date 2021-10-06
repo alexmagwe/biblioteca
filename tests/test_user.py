@@ -53,7 +53,7 @@ class TestPermissions(unittest.TestCase):
     def test_encode_auth_token(self):
         user = Users(
             email='test@test.com',
-            password='test'
+            username='test'
         )
         db.session.add(user)
         db.session.commit()
@@ -64,7 +64,7 @@ class TestPermissions(unittest.TestCase):
     def test_decode_auth_token(self):
         user = Users(
             email='test@test.com',
-            password='test'
+            username='test'
         )
         db.session.add(user)
         db.session.commit()
@@ -86,34 +86,31 @@ class TestPermissions(unittest.TestCase):
             self.assertTrue(isinstance(data['message'],str))
             self.assertTrue((data['data'],str))
             self.assertEqual(data['status'], 201)
-    def test_login(self):
+    def test_token(self):
         with self.client:
             response = self.client.post(
-                '/api/login',
+                '/api/token',
                 json={
                     'email':self.normaluser.email,
-                    'password':self.password
+                    'username':'test'
                 }
             )
             data=response.json
             self.assertTrue(data['type'] == 'success')
             self.assertTrue(isinstance(data['message'],str))
-            self.assertTrue((data['data'],str))
-            self.assertEqual(data['status'], 201)
+            self.assertTrue((data['token'],str))
             
         with self.client:
             response = self.client.post(
-                '/api/login',
+                '/api/token',
                 json={
-                    'email':self.normaluser.email,
-                    'password':'wrongpassword'
+                    'email':'rand@gmail.com',
+                    'username':'test'
                 }
             )
             data=response.json
             self.assertTrue(data['type'] == 'error')
             self.assertTrue(isinstance(data['message'],str))
-            self.assertTrue((data.get('data'),None))
+            self.assertTrue((data.get('token'),None))
 
 
-        
-        
