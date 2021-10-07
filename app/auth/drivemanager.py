@@ -149,7 +149,7 @@ class Gdrive:
             result = self.drive.files().get(
                 fileId=file_id, fields=f"{options}").execute()
         result = self.drive.files().get(fileId=file_id,
-                                        fields="name, size, webContentLink, webViewLink, iconLink, mimeType").execute()
+                                        fields="name, size, webContentLink, thumbnailLink, webViewLink, iconLink, mimeType").execute()
         return result
 
     def get_files(self, num=30):

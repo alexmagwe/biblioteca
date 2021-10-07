@@ -14,7 +14,7 @@ from ..auth import decode_auth_token,create_auth_token
 
 signup_model=myapi.model('SignUp',{'email':fields.String,'password':fields.String,'username':fields.String})
 signin_model=myapi.model('Login',{'email':fields.String,'password':fields.String})
-token_model=myapi.model('getToken',{'email':fields.String,'username':fields.String})
+token_model=myapi.model('getToken',{'email':fields.String,})
 
 class SignUp(Resource):
     @myapi.expect(signup_model)
@@ -68,15 +68,11 @@ class GetToken(Resource):
         data=request.json
         if data:
             email=data.get('email')
-            username=data.get('username')
             if email:
                 user=find_user(email)
                 if not user:
-                    user=Users(email=email,username=username)
+                    user=Users(email=email,)
                     user.add()
-                if user and username and not user.username:
-                    user.username=username
-                    db.session.commit()    
                 if(token:=create_auth_token(user.to_json())):
                     return jsonify(token=token,type="success",status=201)
         else:

@@ -92,7 +92,6 @@ class TestPermissions(unittest.TestCase):
                 '/api/token',
                 json={
                     'email':self.normaluser.email,
-                    'username':'test'
                 }
             )
             data=response.json
@@ -104,7 +103,6 @@ class TestPermissions(unittest.TestCase):
                 '/api/token',
                 json={
                     'email':'rand@gmail.com',
-                    'username':'test'
                 }
             )
             data=response.json
