@@ -1,6 +1,6 @@
 from . import myapi
 from .resources import AddUnits, AddCourse, CourseNotes, AllCourses, AllNotes, AddUserDetails, AddContent, Roles, UserDetails, AllUnits, GetUnits, UnitNotes, Exists, Search,FilterUnits
-from .auth import SignUp,Login,getToken
+from .auth import SignUp,Login,GetToken
 myapi.add_resource(AllCourses, '/courses/all')
 myapi.add_resource(CourseNotes, '/course/notes/all')
 myapi.add_resource(AddCourse, '/add/course')
@@ -18,4 +18,4 @@ myapi.add_resource(Search, '/search')
 myapi.add_resource(Roles, '/roles')
 myapi.add_resource(SignUp, '/signup')
 myapi.add_resource(Login, '/login')
-myapi.add_resource(getToken, '/token')
+myapi.add_resource(GetToken, '/token')

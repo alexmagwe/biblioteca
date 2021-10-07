@@ -62,7 +62,7 @@ class Login(Resource):
 
         
  
-class getToken(Resource):
+class GetToken(Resource):
     @myapi.expect(token_model)
     def post(self):
         data=request.json
@@ -72,12 +72,13 @@ class getToken(Resource):
             if email:
                 user=find_user(email)
                 if not user:
-                    return sendError('User not found, Please create an account.'),401
-                if username and not user.username:
+                    user=Users(email=email,username=username)
+                    user.add()
+                if user and username and not user.username:
                     user.username=username
                     db.session.commit()    
                 if(token:=create_auth_token(user.to_json())):
-                    return jsonify(token=token,type="success",status=201,message="Signin successful")
+                    return jsonify(token=token,type="success",status=201)
         else:
             return sendError('Missing Information'),400
 

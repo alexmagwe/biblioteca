@@ -97,7 +97,6 @@ class TestPermissions(unittest.TestCase):
             )
             data=response.json
             self.assertTrue(data['type'] == 'success')
-            self.assertTrue(isinstance(data['message'],str))
             self.assertTrue((data['token'],str))
             
         with self.client:
@@ -109,8 +108,7 @@ class TestPermissions(unittest.TestCase):
                 }
             )
             data=response.json
-            self.assertTrue(data['type'] == 'error')
-            self.assertTrue(isinstance(data['message'],str))
-            self.assertTrue((data.get('token'),None))
+            self.assertTrue(data['type'] == 'success')
+            self.assertTrue((data.get('token'),str))
 
 
