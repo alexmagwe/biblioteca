@@ -136,8 +136,8 @@ class FilterUnits(Resource):
             course=find_course(course_code)
             if course:
                 units=Units.query.filter_by(year=year,semester=semester,courses_id=course.id).all()
-                return {"units":[unit.to_json() for unit in units]}
-        return ('Please provide the required information'),400
+                return sendSuccess({"units":[unit.to_json() for unit in units]})  
+        return sendError('Please provide the required information'),400
 class UnitNotes(Resource):
     @myapi.expect(unmodel)
     @myapi.doc(body=unmodel)
@@ -286,8 +286,6 @@ class UserDetails(Resource):
         if (data := request.user):
             em = data.get('email')
             user = find_user(em)
-            if not user:
-                return sendError('User not found, Please signin/signup.')
             return sendSuccess(user.to_json())
     # if the user course is not set or for some reason its not found, empty string will be returned
         else:
