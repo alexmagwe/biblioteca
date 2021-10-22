@@ -210,6 +210,7 @@ class AddContent(Resource):
     @myapi.expect(uploadmodel)
     def post(self):
         count = 0
+        failed=[]
         data = request.json
         files = data.get('files')
         code = data.get('unit_code')
@@ -241,19 +242,18 @@ class AddContent(Resource):
                     count += 1
             
                     db.session.add(fil)
-                try:
-                    if count > 0:
+                    try:
                         db.session.commit()
                     # return {"success":"notes added succesfully"}
-                    else:
-                        return sendWarning("the uploaded files already exist")
-                except Exception as e:
-                    return sendError(sys.exc_info()[0]), 500
-                    return
+                    except:
+                        failed.append(f.get('name'))
+                        db.session.rollback()
             else:
                 return sendError('invalid unit')
         else:
             return sendError('unit code not found')
+        if len(failed)>0:
+            return sendWarning(f"some files {failed} could not be added due to naming conflicts"),500
         return sendSuccess('files added sucesfully'), 201
 
 
