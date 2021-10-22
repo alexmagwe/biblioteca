@@ -120,10 +120,11 @@ class Users(db.Model, UserMixin, Utilities):
     role = db.Column(db.Integer, default=Permissions.roles["USER"])
     password = db.Column(db.String(100))
     year = db.Column(db.Integer)
-    username=db.Column(db.String(30),unique=True,index=True)
+    username = db.Column(db.String(30), unique=True, index=True)
     semester = db.Column(db.Integer)
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'))
-    joined_date = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow)
+    joined_date = db.Column(db.DateTime, index=True,
+                            default=datetime.datetime.utcnow)
     # year
 
     def __init__(self, *args, **kwargs):
@@ -132,13 +133,12 @@ class Users(db.Model, UserMixin, Utilities):
             admin = AdminsList.query.filter_by(email=self.email).first()
             if admin:
                 self.role = Permissions.roles["SUPER_ADMIN"]
-  
 
     def to_json(self):
         if self.course:
-            return {"email": self.email, "role": self.role,"username":self.username, "year": self.year, "semester": self.semester, "date_joined": str(self.joined_date), "course": self.course.to_json()}
+            return {"email": self.email, "role": self.role, "username": self.username, "year": self.year, "semester": self.semester, "date_joined": str(self.joined_date), "course": self.course.to_json()}
         else:
-            return {"email": self.email, "role": self.role,"username":self.username, "year": self.year, "semester": self.semester, "date_joined": str(self.joined_date), "course": None}
+            return {"email": self.email, "role": self.role, "username": self.username, "year": self.year, "semester": self.semester, "date_joined": str(self.joined_date), "course": None}
 
     def can(self, perm):
         return self.role is not None and self.has_permission(perm)
@@ -190,7 +190,8 @@ class RoleReviewList(db.Model, Utilities):
     current_role = db.Column(db.Integer(), nullable=False,
                              index=True, default=Permissions.roles["USER"])
     requested_role = db.Column(db.Integer(), nullable=False, index=True)
-    request_date = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow)
+    request_date = db.Column(db.DateTime, index=True,
+                             default=datetime.datetime.utcnow)
 
     def __repr__(self):
         # get role string definition from matching value
@@ -267,15 +268,17 @@ class Notes(db.Model, Utilities):
     name = db.Column(db.String(100), unique=True, index=True)
     unit_id = db.Column(db.Integer, db.ForeignKey('units.id'), nullable=False)
     gid = db.Column(db.String(), unique=True, index=True)
+    link = db.Column(db.String(), unique=True, index=True)
     category = db.Column(db.String(20), default=Categories.DOCUMENT)
     size = db.Column(db.String(), unique=True, index=True)
-    date_uploaded = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow)
+    date_uploaded = db.Column(db.DateTime, index=True,
+                              default=datetime.datetime.utcnow)
 
     def __repr__(self):
         return f'notes:{self.name}'
 
     def to_json(self):
-        return {"id": self.id, "name": self.name, "gid": self.gid, "category": self.category}
+        return {"id": self.id, "name": self.name, "gid": self.gid, "link": self.link, "category": self.category}
 
     def delete_file(self):
         try:
