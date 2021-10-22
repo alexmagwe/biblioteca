@@ -104,7 +104,7 @@ fumodel = myapi.model(
 add_unit_model = myapi.model(
     'AddUnits', {"units": fields.List(fields.Nested(unitfields))})
 notefield = myapi.model(
-    'addcontent', {"name": fields.String, "gid": fields.String, "category": fields.String})
+    'addcontent', {"name": fields.String, "gid": fields.String,"link":fields.String, "category": fields.String})
 uploadmodel = myapi.model('AddContent', {"unit_code": fields.String, "files": fields.List(
     fields.Nested(notefield))})
 searchmodel = myapi.model('Search', {"query": fields.String})
@@ -217,22 +217,29 @@ class AddContent(Resource):
             unit = find_unit(code)
             if unit and len(files) > 0:
                 for f in files:
-                    gid = f.get('gid')
-                    if f.get("category") != Categories.VIDEO:
-                        try:
-                            # metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
-                            metadata = drive.get_metadata(gid, 'size')
-                        except:
-                            continue
-                        if find_file(metadata.get('size')):
-                            continue
-                        fil = Notes(name=f.get('name'), gid=f.get(
-                            'gid'), category=f.get('category'), unit_id=unit.id, size=metadata.get('size'))
-                    else:
-                        fil = Notes(name=f.get('name'), gid=f.get(
-                            'gid'), category=f.get('category'), unit_id=unit.id)
-                    count += 1
 
+                    gid = f.get('gid')
+                    link=f.get('link')
+                    if gid and len(gid)>0:
+                        if f.get("category") != Categories.VIDEO:
+                            try:
+                                # metadata contains name, size, webContentLink, webViewLink, iconLink, mimeType"
+                                metadata = drive.get_metadata(gid, 'size')
+                            except:
+                                continue
+                            if find_file(metadata.get('size')):
+                                continue
+                                fil = Notes(name=f.get('name'), gid=f.get(
+                                'gid'), category=f.get('category'), unit_id=unit.id, size=metadata.get('size'))
+                        else:
+                            fil = Notes(name=f.get('name'), gid=f.get(
+                                'gid'), category=f.get('category'), unit_id=unit.id)
+                    elif link and len(link)>0:
+
+                        fil = Notes(name=f.get('name'), link=f.get(
+                            'link'), category=f.get('category'), unit_id=unit.id)
+                    count += 1
+            
                     db.session.add(fil)
                 try:
                     if count > 0:
@@ -241,8 +248,8 @@ class AddContent(Resource):
                     else:
                         return sendWarning("the uploaded files already exist")
                 except Exception as e:
-                    raise e
                     return sendError(sys.exc_info()[0]), 500
+                    return
             else:
                 return sendError('invalid unit')
         else:

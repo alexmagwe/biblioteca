@@ -71,7 +71,9 @@ class ApiTestCase(unittest.TestCase):
     
     def test_add_video_content(self):
         url='/api/add/content'
-        response=self.client.post(url,json={"unit_code":"SPH207","files":[{"name":"lecture 1","gid":"mb vkljietnhnmlk4t66myu4","category":"video"}]})
+        response=self.client.post(url,json={"unit_code":"SPH207","files":[{"name":"lecture e2","gid":"mb vkljietnhnmlk4t66myu4","category":"video"}]})
+        self.assertEqual(response.status_code,201)
+        response=self.client.post(url,json={"unit_code":"SPH207","files":[{"name":"lecture 1","link":"https://www.loom.com/share/2dd7c3e1d7dd485d816104eb85728d0f","category":"video"}]})
         self.assertEqual(response.status_code,201)
         response=self.client.post(url,json={"unit_code":"SPH323","files":[{"name":"lecture 1","gid":"mb vkljietnhnmlk4t66myu4"}]})
         self.assertEqual(response.status_code,200)
