@@ -157,6 +157,8 @@ class UnitNotes(Resource):
                             continue
                         notes[Categories.VIDEO].append(note.to_json())
                     elif note.category == Categories.ASSIGNMENT:
+                        if unit.code=="SPH401":
+                            continue
                         notes[Categories.ASSIGNMENT].append(note.to_json())
                     else:
                         notes[Categories.DOCUMENT].append(note.to_json())
