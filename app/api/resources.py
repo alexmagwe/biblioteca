@@ -222,8 +222,7 @@ class AddContent(Resource):
             unit = find_unit(code)
             if unit and len(files) > 0:
                 for f in files:
-
-                    gid = f.get('gid')
+                    gid=f.get('gid')    
                     link=f.get('link')
                     if gid and len(gid)>0:
                         if f.get("category") != Categories.VIDEO:
@@ -234,9 +233,10 @@ class AddContent(Resource):
                                 continue
                             if find_file(metadata.get('size')):
                                 continue
-                                fil = Notes(name=f.get('name'), gid=f.get(
+                            fil = Notes(name=f.get('name'), gid=f.get(
                                 'gid'), category=f.get('category'), unit_id=unit.id, size=metadata.get('size'))
                         else:
+
                             fil = Notes(name=f.get('name'), gid=f.get(
                                 'gid'), category=f.get('category'), unit_id=unit.id)
                     elif link and len(link)>0:
