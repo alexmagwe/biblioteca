@@ -2,7 +2,7 @@ discard
 __pycache__
 .vscode
 notes
-*.env
+.env
 .git
 .flaskenv
 .

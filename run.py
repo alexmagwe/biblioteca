@@ -5,6 +5,7 @@ import os
 if os.environ.get('ENV')=='production':
     app=create_app('production')
 else:
+    print('creating app in dev mode')
     app=create_app('development')
 #injects models data directly into templates
 @app.context_processor
